@@ -10,22 +10,23 @@ signal pedagogical_pressed
 signal accessibility_pressed
 signal dpad_direction_pressed(dir: Vector2i)
 
-@onready var title_label: Label = $TopBar/MarginContainer/HBoxContainer/Title
-@onready var steps_label: Label = $TopBar/MarginContainer/HBoxContainer/StepsLabel
+@onready var title_label: Label = $TopBar/MarginContainer/VBoxContainer/Row1/Title
+@onready var steps_label: Label = $TopBar/MarginContainer/VBoxContainer/Row1/StepsBadge/Margin/StepsLabel
+@onready var music_button: Button = $TopBar/MarginContainer/VBoxContainer/Row1/MusicBtn
+@onready var sfx_button: Button = $TopBar/MarginContainer/VBoxContainer/Row1/SfxBtn
+@onready var access_button: Button = $TopBar/MarginContainer/VBoxContainer/Row1/AccessBtn
 
-# Action Buttons in TopBar
-@onready var grade_button: Button = $TopBar/MarginContainer/HBoxContainer/GradeBtn
-@onready var undo_button: Button = $TopBar/MarginContainer/HBoxContainer/UndoBtn
-@onready var restart_button: Button = $TopBar/MarginContainer/HBoxContainer/RestartBtn
-@onready var prev_button: Button = $TopBar/MarginContainer/HBoxContainer/PrevBtn
-@onready var next_button: Button = $TopBar/MarginContainer/HBoxContainer/NextBtn
-@onready var owl_button: Button = $TopBar/MarginContainer/HBoxContainer/OwlBtn
-@onready var access_button: Button = $TopBar/MarginContainer/HBoxContainer/AccessBtn
-@onready var toggle_bncc_button: Button = $TopBar/MarginContainer/HBoxContainer/ToggleBNCCBtn
-@onready var music_button: Button = $TopBar/MarginContainer/HBoxContainer/MusicBtn
-@onready var sfx_button: Button = $TopBar/MarginContainer/HBoxContainer/SfxBtn
+# Action Buttons in TopBar Row2
+@onready var grade_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/GradeBtn
+@onready var prev_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/PrevBtn
+@onready var next_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/NextBtn
+@onready var undo_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/UndoBtn
+@onready var restart_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/RestartBtn
+@onready var toggle_bncc_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/ToggleBNCCBtn
+@onready var owl_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/OwlBtn
 
 # Objective Panel
+@onready var objective_panel: PanelContainer = $ObjectivePanel
 @onready var objective_label: Label = $ObjectivePanel/Margin/VBox/ObjectiveText
 @onready var math_status_label: Label = $ObjectivePanel/Margin/VBox/MathStatus
 
@@ -43,11 +44,12 @@ signal dpad_direction_pressed(dir: Vector2i)
 @onready var down_btn: Button = $VirtualDPad/DownBtn
 @onready var left_btn: Button = $VirtualDPad/LeftBtn
 @onready var right_btn: Button = $VirtualDPad/RightBtn
+@onready var quick_action_container: HBoxContainer = $VirtualDPad/QuickActionContainer
 @onready var quick_undo_btn: Button = $VirtualDPad/QuickActionContainer/QuickUndoBtn
 @onready var quick_restart_btn: Button = $VirtualDPad/QuickActionContainer/QuickRestartBtn
 
 var _float_tween: Tween
-var _base_card_y: float = 80.0
+var _base_card_y: float = 96.0
 var _is_bncc_open: bool = false
 
 func _ready() -> void:
@@ -160,6 +162,41 @@ func _ready() -> void:
 		bncc_modal.visible = false
 	if bncc_card:
 		_base_card_y = bncc_card.position.y
+
+	get_tree().root.size_changed.connect(_on_viewport_size_changed)
+	_on_viewport_size_changed()
+
+func _on_viewport_size_changed() -> void:
+	var vp := get_viewport()
+	if not vp:
+		return
+	var vp_size: Vector2 = vp.get_visible_rect().size
+	var screen_w: float = vp_size.x
+	var screen_h: float = vp_size.y
+	var is_portrait: bool = screen_h > screen_w
+
+	if objective_panel:
+		var panel_w: float = minf(620.0, maxf(screen_w - 24.0, 260.0))
+		objective_panel.offset_left = -panel_w / 2.0
+		objective_panel.offset_right = panel_w / 2.0
+
+	if virtual_dpad:
+		if is_portrait:
+			virtual_dpad.offset_left = 16.0
+			virtual_dpad.offset_right = 206.0
+			virtual_dpad.offset_bottom = -16.0
+			virtual_dpad.offset_top = -206.0
+			if quick_action_container:
+				var quick_w: float = 142.0
+				var target_x: float = screen_w - virtual_dpad.offset_left - quick_w - 20.0
+				quick_action_container.position.x = maxf(target_x, 200.0)
+		else:
+			virtual_dpad.offset_left = 24.0
+			virtual_dpad.offset_right = 214.0
+			virtual_dpad.offset_bottom = -10.0
+			virtual_dpad.offset_top = -200.0
+			if quick_action_container:
+				quick_action_container.position.x = 230.0
 
 func set_virtual_dpad_visible(is_vis: bool) -> void:
 	if virtual_dpad:

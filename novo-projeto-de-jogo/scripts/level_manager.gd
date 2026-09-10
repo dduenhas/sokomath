@@ -328,23 +328,50 @@ func _center_camera_or_level() -> void:
 	var total_w := float(w * GridConstants.TILE_SIZE)
 	var total_h := float(h * GridConstants.TILE_SIZE)
 
-	var vp_size := get_viewport_rect().size
-	var screen_w := vp_size.x
-	var screen_h := vp_size.y
+	var vp_size: Vector2 = get_viewport_rect().size
+	var screen_w: float = vp_size.x
+	var screen_h: float = vp_size.y
+	var is_portrait: bool = screen_h > screen_w
 
-	# Margens seguras para interface superior (HUD) e controles touch inferiores
-	var available_w := maxf(screen_w - 60.0, 200.0)
-	var available_h := maxf(screen_h - 140.0, 200.0)
+	# Altura ocupada pela TopBar + ObjectivePanel + margem de segurança
+	var top_ui_h: float = 162.0
 
-	var fit_scale := minf(1.0, minf(available_w / maxf(total_w, 1.0), available_h / maxf(total_h, 1.0)))
+	var fit_scale: float = 1.0
+	var origin_x: float = 0.0
+	var origin_y: float = 0.0
+
+	if is_portrait:
+		# Modo Vertical (Mobile Portrait):
+		# Ajusta o jogo para os cantos da tela (máxima largura disponível),
+		# respeitando a área inferior reservada para os controles de toque (D-Pad).
+		var margin_x := 16.0
+		var target_scale_w := maxf((screen_w - margin_x) / total_w, 0.2)
+		var dpad_reserved_h := 220.0
+		var max_board_h := maxf(screen_h - top_ui_h - dpad_reserved_h, 120.0)
+		var max_scale_h := max_board_h / total_h
+
+		fit_scale = minf(target_scale_w, max_scale_h)
+		var scaled_w := total_w * fit_scale
+		origin_x = (screen_w - scaled_w) / 2.0
+		origin_y = top_ui_h + 8.0
+	else:
+		# Modo Horizontal (Desktop / Mobile Landscape):
+		# Ajusta o jogo do topo ao rodapé da área útil ("topo e rodape"),
+		# maximizando a escala vertical sem estourar as laterais.
+		var bottom_margin := 14.0
+		var available_h := maxf(screen_h - top_ui_h - bottom_margin, 120.0)
+		var target_scale_h := available_h / total_h
+		var available_w := maxf(screen_w - 40.0, 120.0)
+		var target_scale_w := available_w / total_w
+
+		fit_scale = minf(target_scale_h, target_scale_w)
+		var scaled_w := total_w * fit_scale
+		var scaled_h := total_h * fit_scale
+		origin_x = (screen_w - scaled_w) / 2.0
+		origin_y = top_ui_h + (available_h - scaled_h) / 2.0
+
+	fit_scale = maxf(fit_scale, 0.25)
 	scale = Vector2(fit_scale, fit_scale)
-
-	var scaled_w := total_w * fit_scale
-	var scaled_h := total_h * fit_scale
-
-	var origin_x := (screen_w - scaled_w) / 2.0
-	var origin_y := (screen_h - scaled_h) / 2.0 + 35.0
-
 	position = Vector2(origin_x, origin_y)
 
 func get_box_at(coord: Vector2i) -> SokoBox:
