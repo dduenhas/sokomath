@@ -1,0 +1,9 @@
+{
+  "name": "sokomath-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SokoMath - Computação & Matemática (Versão Web)",
+  "scripts": {
+    "build": "echo 'SokoMath Web build is pre-compiled in public/'"
+  }
+}

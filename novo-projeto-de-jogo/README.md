@@ -97,11 +97,18 @@ O jogo conta com um botão dedicado com o ícone da **Corujinha Pedagógica (�
 4. Clique em **Edit** (Editar).
 5. Pressione `F5` para rodar a cena principal (`res://scenes/main.tscn`).
 
-### Exportação (Build)
+### Exportação (Build) & Deploy na Vercel
 * O projeto está configurado com renderizador **GL Compatibility**, facilitando exportação para:
   * **HTML5 / Web** (funciona direto no navegador em computadores e celulares)
   * **Android / iOS** (smartphones e tablets)
   * **Windows / Linux / macOS** (executáveis nativos de computador)
+
+### 🌐 Como Publicar na Vercel
+O repositório já inclui a build Web compilada na pasta `public/` e o arquivo `vercel.json` com os cabeçalhos de segurança (`COOP/COEP`) necessários para WebAssembly e áudio:
+1. Acesse o painel da [Vercel](https://vercel.com/) e clique em **Add New... ➔ Project**.
+2. Importe o repositório `dduenhas/sokomath`.
+3. Mantenha as configurações padrão (o `vercel.json` e `package.json` já definem `public` como diretório de saída).
+4. Clique em **Deploy**! O jogo estará disponível online imediatamente com suporte a navegadores desktop e mobile.
 
 ---
 
