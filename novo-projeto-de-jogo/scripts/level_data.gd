@@ -239,7 +239,7 @@ static func _level_g1_4() -> Dictionary:
 		"title": "1º Ano - Fase 4: Comparação (O Menor Número)",
 		"bncc_code": "EF01MA01 / Computação: Comparação e Seleção de Menor Valor (MIN)",
 		"bncc_desc": "O algoritmo precisa do MENOR valor para seguir adiante. Compare as duas caixas (%d e %d) e empurre a menor até o sensor." % [small, large],
-		"rule_description": "Leve a MENOR caixa (%d) até o sensor" % small,
+		"rule_description": "Leve a MENOR caixa até o sensor",
 		"rule_type": "MINIMUM_VALUE",
 		"target_value": small,
 		"optimal_steps": 12,
@@ -449,7 +449,7 @@ static func _level_g2_4() -> Dictionary:
 		"title": "2º Ano - Fase 4: Pulo de 2 em 2",
 		"bncc_code": "EF02MA09 / Computação: Padrões de Repetição e Passo Fixo (+2)",
 		"bncc_desc": "Observe o padrão repetitivo: %d ➔ %d ➔ [ ? ]. Descubra qual é o próximo número da sequência e coloque-o na placa!" % [start, t2],
-		"rule_description": "Complete a sequência (+2): %d ➔ %d ➔ [ %d ]" % [start, t2, t3],
+		"rule_description": "Complete a sequência (+2): %d ➔ %d ➔ [ ? ]" % [start, t2],
 		"rule_type": "TARGET_PLATES",
 		"target_value": t3,
 		"optimal_steps": 14,
@@ -471,7 +471,7 @@ static func _level_g2_4() -> Dictionary:
 			{"pos": Vector2i(3, 4), "val": vals[1]["val"], "theme": vals[1]["theme"]}
 		],
 		"plates": [
-			{"pos": Vector2i(6, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": t3, "label": str(t3), "id": "seq_p"}
+			{"pos": Vector2i(6, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": t3, "label": "?", "id": "seq_p"}
 		]
 	}
 
@@ -652,7 +652,7 @@ static func _level_g3_3() -> Dictionary:
 		"title": "3º Ano - Fase 3: Sequência de Saltos (+%d)" % step_size,
 		"bncc_code": "EF03MA10 / Computação: Regularidades e Iterações de Laço",
 		"bncc_desc": "Identifique a regra recursiva da sequência: %d ➔ %d ➔ [ ? ] ➔ [ ? ]. Posicione os dois próximos números nos sensores!" % [t1, t2],
-		"rule_description": "Complete a sequência (+%d): %d ➔ %d ➔ [ %d ] ➔ [ %d ]" % [step_size, t1, t2, t3, t4],
+		"rule_description": "Complete a sequência (+%d): %d ➔ %d ➔ [ ? ] ➔ [ ? ]" % [step_size, t1, t2],
 		"rule_type": "SEQUENCE_PA",
 		"target_value": step_size,
 		"seq_start": [t1, t2],
@@ -677,8 +677,8 @@ static func _level_g3_3() -> Dictionary:
 			{"pos": Vector2i(4, 3), "val": vals[2]["val"], "theme": vals[2]["theme"]}
 		],
 		"plates": [
-			{"pos": Vector2i(7, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": t3, "label": str(t3), "id": "seq_1"},
-			{"pos": Vector2i(7, 5), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": t4, "label": str(t4), "id": "seq_2"}
+			{"pos": Vector2i(7, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": t3, "label": "3º Termo (?)", "id": "seq_1"},
+			{"pos": Vector2i(7, 5), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": t4, "label": "4º Termo (?)", "id": "seq_2"}
 		]
 	}
 
@@ -972,11 +972,12 @@ static func _level_g4_5() -> Dictionary:
 		"level_index": 4,
 		"title": "4º Ano - Fase 5: O Padrão do Dobro (×2)",
 		"bncc_code": "EF04MA11 / Computação: Sequências Geométricas e Escalaridade",
-		"bncc_desc": "Observe o crescimento multiplicativo: 2 ➔ 4 ➔ [ ? ] ➔ [ ? ]. Cada número é o dobro do anterior (×2). Complete com 8 e 16!",
-		"rule_description": "Complete o padrão do dobro: 2 ➔ 4 ➔ [ 8 ] ➔ [ 16 ]",
+		"bncc_desc": "Observe o crescimento multiplicativo: 2 ➔ 4 ➔ [ ? ] ➔ [ ? ]. Cada número é o dobro do anterior (×2). Calcule e posicione os próximos números nos sensores!",
+		"rule_description": "Complete o padrão do dobro (×2): 2 ➔ 4 ➔ [ ? ] ➔ [ ? ]",
 		"rule_type": "SEQUENCE_PA",
 		"target_value": 8,
 		"seq_start": [2, 4],
+		"seq_op": "×2",
 		"optimal_steps": 30,
 		"grid_width": 11,
 		"grid_height": 8,
@@ -999,8 +1000,8 @@ static func _level_g4_5() -> Dictionary:
 			{"pos": Vector2i(4, 3), "val": 12, "theme": "beige"}
 		],
 		"plates": [
-			{"pos": Vector2i(7, 2), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 8, "label": "Termo 8", "id": "seq_8"},
-			{"pos": Vector2i(7, 4), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 16, "label": "Termo 16", "id": "seq_16"}
+			{"pos": Vector2i(7, 2), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 8, "label": "3º Termo (?)", "id": "seq_8"},
+			{"pos": Vector2i(7, 4), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 16, "label": "4º Termo (?)", "id": "seq_16"}
 		]
 	}
 

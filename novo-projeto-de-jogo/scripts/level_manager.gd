@@ -511,7 +511,7 @@ func _evaluate_game_state() -> void:
 			var p_ok := plates.size() > 0 and plates[0].is_satisfied
 			var b := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var b_str := str(b.value) if b else "?"
-			status_text = "Menor Valor no Sensor: [%s] / Meta: %d (%s)" % [b_str, target_val, "✓ Ativado" if p_ok else "Aguardando"]
+			status_text = "Caixa no Sensor: [%s] (%s)" % [b_str, "✓ Menor Valor Correto!" if p_ok else "Aguardando o menor número"]
 			satisfied = p_ok
 
 		"CONDITION_SINGLE":
@@ -598,8 +598,9 @@ func _evaluate_game_state() -> void:
 			var b3 := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var b4 := get_box_at(plates[1].grid_pos) if plates.size() > 1 else null
 			var seq_start: Array = current_level.get("seq_start", [2, 5])
-			status_text = "Sequência (+%d): %s → %s → [%s] → [%s]" % [
-				target_val,
+			var seq_op: String = current_level.get("seq_op", "+%d" % target_val)
+			status_text = "Sequência (%s): %s → %s → [%s] → [%s]" % [
+				seq_op,
 				str(seq_start[0]),
 				str(seq_start[1]),
 				str(b3.value) if b3 else "?",
