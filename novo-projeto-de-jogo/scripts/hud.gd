@@ -15,6 +15,7 @@ signal dpad_direction_pressed(dir: Vector2i)
 @onready var music_button: Button = $TopBar/MarginContainer/VBoxContainer/Row1/MusicBtn
 @onready var sfx_button: Button = $TopBar/MarginContainer/VBoxContainer/Row1/SfxBtn
 @onready var access_button: Button = $TopBar/MarginContainer/VBoxContainer/Row1/AccessBtn
+@onready var fullscreen_button: Button = $TopBar/MarginContainer/VBoxContainer/Row1/FullscreenBtn
 
 # Action Buttons in TopBar Row2
 @onready var grade_button: Button = $TopBar/MarginContainer/VBoxContainer/Row2/GradeBtn
@@ -55,7 +56,7 @@ var _is_bncc_open: bool = false
 func _ready() -> void:
 	var all_btns: Array[Button] = [
 		grade_button, undo_button, restart_button, prev_button, next_button,
-		owl_button, access_button, toggle_bncc_button, music_button, sfx_button,
+		owl_button, access_button, fullscreen_button, toggle_bncc_button, music_button, sfx_button,
 		close_bncc_btn, dismiss_bncc_btn,
 		up_btn, down_btn, left_btn, right_btn, quick_undo_btn, quick_restart_btn
 	]
@@ -100,6 +101,12 @@ func _ready() -> void:
 		access_button.pressed.connect(func():
 			SoundManager.play("click")
 			accessibility_pressed.emit()
+		)
+
+	if fullscreen_button:
+		fullscreen_button.pressed.connect(func():
+			SoundManager.play("click")
+			toggle_fullscreen()
 		)
 
 	if toggle_bncc_button:
@@ -166,6 +173,42 @@ func _ready() -> void:
 	get_tree().root.size_changed.connect(_on_viewport_size_changed)
 	_on_viewport_size_changed()
 
+func toggle_fullscreen() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("""
+			(function() {
+				var doc = document;
+				if (!doc.fullscreenElement && !doc.webkitFullscreenElement && !doc.mozFullScreenElement && !doc.msFullscreenElement) {
+					var el = doc.documentElement;
+					if (el.requestFullscreen) {
+						el.requestFullscreen().catch(function(e) {});
+					} else if (el.webkitRequestFullscreen) {
+						el.webkitRequestFullscreen();
+					} else if (el.mozRequestFullScreen) {
+						el.mozRequestFullScreen();
+					} else if (el.msRequestFullscreen) {
+						el.msRequestFullscreen();
+					}
+				} else {
+					if (doc.exitFullscreen) {
+						doc.exitFullscreen();
+					} else if (doc.webkitExitFullscreen) {
+						doc.webkitExitFullscreen();
+					} else if (doc.mozCancelFullScreen) {
+						doc.mozCancelFullScreen();
+					} else if (doc.msExitFullscreen) {
+						doc.msExitFullscreen();
+					}
+				}
+			})();
+		""")
+	else:
+		var mode := DisplayServer.window_get_mode()
+		if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
 func _on_viewport_size_changed() -> void:
 	var vp := get_viewport()
 	if not vp:
@@ -180,23 +223,45 @@ func _on_viewport_size_changed() -> void:
 		objective_panel.offset_left = -panel_w / 2.0
 		objective_panel.offset_right = panel_w / 2.0
 
-	if virtual_dpad:
-		if is_portrait:
-			virtual_dpad.offset_left = 16.0
-			virtual_dpad.offset_right = 206.0
-			virtual_dpad.offset_bottom = -16.0
-			virtual_dpad.offset_top = -206.0
-			if quick_action_container:
-				var quick_w: float = 142.0
-				var target_x: float = screen_w - virtual_dpad.offset_left - quick_w - 20.0
-				quick_action_container.position.x = maxf(target_x, 200.0)
-		else:
-			virtual_dpad.offset_left = 24.0
-			virtual_dpad.offset_right = 214.0
-			virtual_dpad.offset_bottom = -10.0
-			virtual_dpad.offset_top = -200.0
-			if quick_action_container:
-				quick_action_container.position.x = 230.0
+	# Posição aproximada se não informada pelo LevelManager
+	var approx_board_bottom := (screen_w * 0.85) + 162.0 if is_portrait else screen_h * 0.75
+	adjust_controls_layout(is_portrait, approx_board_bottom, screen_w, screen_h)
+
+func adjust_controls_layout(is_portrait: bool, board_bottom: float, screen_w: float, screen_h: float) -> void:
+	if not virtual_dpad:
+		return
+
+	if is_portrait:
+		# Modo Vertical: amplia consideravelmente os controles e centraliza na área vazia abaixo do tabuleiro
+		var free_h: float = maxf(screen_h - board_bottom, 220.0)
+		# Escala ampliada (1.35x a 1.65x) proporcional ao espaço livre
+		var dpad_scale: float = clampf(free_h / 230.0, 1.35, 1.65)
+		virtual_dpad.scale = Vector2(dpad_scale, dpad_scale)
+
+		var effective_dpad_h: float = 190.0 * dpad_scale
+		# Centraliza verticalmente no espaço livre
+		var target_y: float = board_bottom + (free_h - effective_dpad_h) / 2.0
+		target_y = clampf(target_y, board_bottom + 6.0, screen_h - effective_dpad_h - 10.0)
+
+		virtual_dpad.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		virtual_dpad.position = Vector2(20.0, target_y)
+
+		if quick_action_container:
+			# Posiciona botões de ação na direita do display, ergonomicamente para o polegar direito
+			var quick_w: float = 142.0 * dpad_scale
+			var right_offset_x: float = (screen_w - 24.0 - quick_w - virtual_dpad.position.x) / dpad_scale
+			quick_action_container.position.x = maxf(right_offset_x, 150.0)
+			quick_action_container.position.y = 80.0
+	else:
+		# Modo Horizontal: escala padrão compacta no canto inferior esquerdo
+		virtual_dpad.scale = Vector2.ONE
+		virtual_dpad.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+		virtual_dpad.offset_left = 24.0
+		virtual_dpad.offset_right = 214.0
+		virtual_dpad.offset_bottom = -10.0
+		virtual_dpad.offset_top = -200.0
+		if quick_action_container:
+			quick_action_container.position = Vector2(230.0, 140.0)
 
 func set_virtual_dpad_visible(is_vis: bool) -> void:
 	if virtual_dpad:

@@ -374,6 +374,10 @@ func _center_camera_or_level() -> void:
 	scale = Vector2(fit_scale, fit_scale)
 	position = Vector2(origin_x, origin_y)
 
+	var board_bottom: float = origin_y + total_h * fit_scale
+	if hud and hud.has_method("adjust_controls_layout"):
+		hud.adjust_controls_layout(is_portrait, board_bottom, screen_w, screen_h)
+
 func get_box_at(coord: Vector2i) -> SokoBox:
 	for b in boxes:
 		if b.grid_pos == coord:

@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" path="res://assets/icons/music.svg" id="12_icon_music"]
 [ext_resource type="Texture2D" path="res://assets/icons/sound.svg" id="13_icon_sound"]
 [ext_resource type="Texture2D" path="res://assets/icons/close.svg" id="14_icon_close"]
+[ext_resource type="Texture2D" path="res://assets/icons/fullscreen.svg" id="15_icon_fullscreen"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
 bg_color = Color(0.06, 0.08, 0.12, 0.95)
@@ -246,6 +247,15 @@ focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_access_btn")
 text = " Acessibilidade"
 icon = ExtResource("9_icon_access")
+expand_icon = true
+
+[node name="FullscreenBtn" type="Button" parent="TopBar/MarginContainer/VBoxContainer/Row1"]
+custom_minimum_size = Vector2(36, 32)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+icon = ExtResource("15_icon_fullscreen")
+icon_alignment = 1
 expand_icon = true
 
 [node name="Row2" type="HBoxContainer" parent="TopBar/MarginContainer/VBoxContainer"]
