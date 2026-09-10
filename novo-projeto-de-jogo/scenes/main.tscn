@@ -1,0 +1,52 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/level_manager.gd" id="1_level_manager_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="2_hud_scene"]
+[ext_resource type="PackedScene" path="res://scenes/ui/victory_modal.tscn" id="3_victory_modal_scene"]
+[ext_resource type="Script" path="res://scripts/sound_manager.gd" id="4_sound_manager_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/grade_select_modal.tscn" id="5_grade_select_modal_scene"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pedagogical_modal.tscn" id="6_pedagogical_modal_scene"]
+[ext_resource type="PackedScene" path="res://scenes/ui/accessibility_modal.tscn" id="7_accessibility_modal_scene"]
+
+[node name="Main" type="Node2D"]
+
+[node name="SoundManager" type="Node" parent="."]
+script = ExtResource("4_sound_manager_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1280.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.08, 0.12, 1)
+
+[node name="LevelManager" type="Node2D" parent="." node_paths=PackedStringArray("hud", "victory_modal", "grade_modal", "pedagogical_modal", "accessibility_modal")]
+script = ExtResource("1_level_manager_script")
+hud = NodePath("../HUD")
+victory_modal = NodePath("../VictoryModal")
+grade_modal = NodePath("../GradeSelectModal")
+pedagogical_modal = NodePath("../PedagogicalModal")
+accessibility_modal = NodePath("../AccessibilityModal")
+
+[node name="GroundContainer" type="Node2D" parent="LevelManager"]
+
+[node name="WallsContainer" type="Node2D" parent="LevelManager"]
+
+[node name="PlatesContainer" type="Node2D" parent="LevelManager"]
+
+[node name="BoxesContainer" type="Node2D" parent="LevelManager"]
+
+[node name="EntitiesContainer" type="Node2D" parent="LevelManager"]
+
+[node name="HUD" parent="." instance=ExtResource("2_hud_scene")]
+
+[node name="VictoryModal" parent="." instance=ExtResource("3_victory_modal_scene")]
+
+[node name="GradeSelectModal" parent="." instance=ExtResource("5_grade_select_modal_scene")]
+
+[node name="PedagogicalModal" parent="." instance=ExtResource("6_pedagogical_modal_scene")]
+
+[node name="AccessibilityModal" parent="." instance=ExtResource("7_accessibility_modal_scene")]

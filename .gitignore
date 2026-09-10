@@ -1,0 +1,5 @@
+# Godot 4 .gitignore
+.godot/
+*.translation
+__pycache__/
+*.pyc

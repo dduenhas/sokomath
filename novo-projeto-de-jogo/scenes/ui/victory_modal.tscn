@@ -1,0 +1,121 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/victory_modal.gd" id="1_victory_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_overlay"]
+bg_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.08, 0.12, 0.18, 0.98)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.9, 0.75, 0.2, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_size = 10
+shadow_color = Color(0, 0, 0, 0.5)
+
+[sub_resource type="LabelSettings" id="LabelSettings_vtitle"]
+font_size = 26
+font_color = Color(1, 0.85, 0.3, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_vstars"]
+font_size = 20
+font_color = Color(1, 0.8, 0.2, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_vmsg"]
+font_size = 14
+font_color = Color(0.7, 0.85, 1, 1)
+
+[node name="VictoryModal" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_victory_script")
+
+[node name="Background" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_overlay")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(480, 320)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+text = "🎉 Desafio Concluído!"
+label_settings = SubResource("LabelSettings_vtitle")
+horizontal_alignment = 1
+
+[node name="LevelName" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Fase 1: Entrada, Processamento e Saída"
+horizontal_alignment = 1
+
+[node name="Stars" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+text = "Eficiência Algorítmica: ★ ★ ★"
+label_settings = SubResource("LabelSettings_vstars")
+horizontal_alignment = 1
+
+[node name="StepsInfo" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Passos executados: 14 | Custo ótimo: 14"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+text = "Conceito consolidado: Pensamento Computacional & Aritmética"
+label_settings = SubResource("LabelSettings_vmsg")
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="CenterContainer/PanelContainer/Margin/VBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RetryBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(160, 42)
+layout_mode = 2
+focus_mode = 0
+text = "🔄 Repetir Fase"
+
+[node name="NextBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(180, 42)
+layout_mode = 2
+focus_mode = 0
+text = "Próxima Fase ➔"

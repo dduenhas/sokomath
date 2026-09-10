@@ -1,0 +1,228 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/accessibility_modal.gd" id="1_accessibility_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.08, 0.11, 0.17, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.65, 0.95, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_size = 20
+shadow_color = Color(0, 0, 0, 0.7)
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 18
+font_color = Color(0.4, 0.8, 1, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
+bg_color = Color(0.45, 0.15, 0.15, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.3, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="LabelSettings" id="LabelSettings_item"]
+font_size = 14
+font_color = Color(0.9, 0.95, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+bg_color = Color(0.12, 0.28, 0.45, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.7, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="AccessibilityModal" type="CanvasLayer"]
+layer = 12
+script = ExtResource("1_accessibility_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(680, 520)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "♿ Recursos de Acessibilidade & Controles"
+label_settings = SubResource("LabelSettings_title")
+
+[node name="CloseBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+text = "✕"
+
+[node name="Content" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Grid" type="GridContainer" parent="CenterContainer/PanelContainer/Margin/VBox/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="LabelContrast" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Modo de Alto Contraste e Daltônicos:"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="ContrastCheck" type="CheckButton" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="LabelTextScale" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Texto e Interface Ampliada:"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="TextScaleCheck" type="CheckButton" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="LabelDpad" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Botões Virtuais na Tela (D-Pad Touch):"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="DpadCheck" type="CheckButton" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+focus_mode = 0
+button_pressed = true
+
+[node name="LabelSwipe" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Controle por Deslizar o Dedo (Swipe):"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="SwipeCheck" type="CheckButton" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+focus_mode = 0
+button_pressed = true
+
+[node name="LabelMotion" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Reduzir Efeitos de Movimento / Pulsar:"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="MotionCheck" type="CheckButton" parent="CenterContainer/PanelContainer/Margin/VBox/Content/Grid"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/PanelContainer/Margin/VBox/Content"]
+layout_mode = 2
+
+[node name="AudioSection" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AudioTitle" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection"]
+layout_mode = 2
+text = "Controle de Volumes de Áudio:"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="MusicRow" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection/MusicRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "🎵 Volume Música:"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="MusicSlider" type="HSlider" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection/MusicRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 80.0
+
+[node name="MusicVal" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection/MusicRow"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+text = "80%"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="SfxRow" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection/SfxRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "🔊 Volume Efeitos:"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="SfxSlider" type="HSlider" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection/SfxRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 90.0
+
+[node name="SfxVal" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection/SfxRow"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+text = "90%"
+label_settings = SubResource("LabelSettings_item")
+
+[node name="TestSfxBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Content/AudioSection"]
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "🔔 Testar Efeito Sonoro"

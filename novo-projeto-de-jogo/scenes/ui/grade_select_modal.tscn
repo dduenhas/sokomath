@@ -1,0 +1,138 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/grade_select_modal.gd" id="1_grade_select_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_overlay"]
+bg_color = Color(0.04, 0.06, 0.09, 0.88)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_main_panel"]
+bg_color = Color(0.06, 0.09, 0.14, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.5, 0.8, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_size = 14
+shadow_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="LabelSettings" id="LabelSettings_modal_title"]
+font_size = 22
+font_color = Color(1, 0.88, 0.35, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_audio_btn"]
+bg_color = Color(0.12, 0.2, 0.3, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.6, 0.85, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
+bg_color = Color(0.4, 0.15, 0.15, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="GradeSelectModal" type="CanvasLayer"]
+layer = 15
+script = ExtResource("1_grade_select_script")
+
+[node name="Background" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_overlay")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(920, 560)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_main_panel")
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+
+[node name="TitleBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header/TitleBox"]
+layout_mode = 2
+text = "🎒 Selecione o Ano Escolar (Ensino Fundamental I)"
+label_settings = SubResource("LabelSettings_modal_title")
+
+[node name="Subtitle" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header/TitleBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.85, 0.95, 1)
+theme_override_font_sizes/font_size = 13
+text = "Escolha sua série escolar para carregar a bateria de exercícios de lógica e pensamento computacional calibrada para sua idade:"
+
+[node name="AudioControls" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="MusicBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header/AudioControls"]
+custom_minimum_size = Vector2(108, 32)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_audio_btn")
+text = "🎵 Música"
+
+[node name="SfxBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header/AudioControls"]
+custom_minimum_size = Vector2(108, 32)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_audio_btn")
+text = "🔊 Efeitos"
+
+[node name="CloseBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
+custom_minimum_size = Vector2(80, 32)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+text = "✖ Fechar"
+
+[node name="ScrollCards" type="ScrollContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 1
+vertical_scroll_mode = 0
+
+[node name="CardsContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox/ScrollCards"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+alignment = 1

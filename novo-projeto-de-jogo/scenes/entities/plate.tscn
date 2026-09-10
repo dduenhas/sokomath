@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/plate.gd" id="1_plate_script"]
+[ext_resource type="Texture2D" path="res://kenney_sokoban-pack/PNG/Default size/Environment/environment_06.png" id="2_frame_tex"]
+[ext_resource type="Texture2D" path="res://kenney_sokoban-pack/PNG/Default size/Environment/environment_02.png" id="3_base_tex"]
+[ext_resource type="Texture2D" path="res://kenney_sokoban-pack/PNG/Default size/Environment/environment_05.png" id="4_active_tex"]
+[ext_resource type="Texture2D" path="res://assets/yellow_glow.png" id="5_yellow_glow_tex"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tag"]
+bg_color = Color(0.1, 0.13, 0.18, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.85, 0.25, 0.95)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_top = 2.0
+expand_margin_right = 6.0
+expand_margin_bottom = 2.0
+shadow_size = 4
+shadow_color = Color(0.9, 0.7, 0.1, 0.3)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tag"]
+font_size = 14
+font_color = Color(1, 0.95, 0.6, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.95)
+
+[node name="Plate" type="Node2D"]
+script = ExtResource("1_plate_script")
+
+[node name="FrameSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_frame_tex")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_base_tex")
+
+[node name="Indicator" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("4_active_tex")
+
+[node name="YellowGlow" type="Sprite2D" parent="."]
+modulate = Color(1, 0.95, 0.4, 0.65)
+position = Vector2(0, 18)
+scale = Vector2(0.65, 0.5)
+texture = ExtResource("5_yellow_glow_tex")
+
+[node name="TagBadge" type="PanelContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = 10.0
+offset_right = 16.0
+offset_bottom = 26.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_tag")
+
+[node name="Label" type="Label" parent="TagBadge"]
+layout_mode = 2
+text = "="
+label_settings = SubResource("LabelSettings_tag")
+horizontal_alignment = 1
+vertical_alignment = 1

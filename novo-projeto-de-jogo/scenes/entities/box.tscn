@@ -1,0 +1,53 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/box.gd" id="1_box_script"]
+[ext_resource type="Texture2D" path="res://kenney_sokoban-pack/PNG/Default size/Crates/crate_01.png" id="2_crate_tex"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
+bg_color = Color(0.08, 0.1, 0.14, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.8, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+expand_margin_left = 4.0
+expand_margin_top = 2.0
+expand_margin_right = 4.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_val"]
+font_size = 20
+font_color = Color(1, 0.95, 0.8, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Box" type="Node2D"]
+script = ExtResource("1_box_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_crate_tex")
+
+[node name="ValueBadge" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="Label" type="Label" parent="ValueBadge"]
+layout_mode = 2
+text = "1"
+label_settings = SubResource("LabelSettings_val")
+horizontal_alignment = 1
+vertical_alignment = 1

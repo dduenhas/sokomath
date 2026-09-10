@@ -1,0 +1,465 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
+bg_color = Color(0.06, 0.08, 0.12, 0.95)
+border_width_bottom = 2
+border_color = Color(0.2, 0.45, 0.7, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 17
+font_color = Color(1, 0.88, 0.35, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grade_btn"]
+bg_color = Color(0.12, 0.42, 0.35, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.85, 0.7, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_action_btn"]
+bg_color = Color(0.12, 0.2, 0.3, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.6, 0.85, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_restart_btn"]
+bg_color = Color(0.75, 0.3, 0.15, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.6, 0.4, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_owl_btn"]
+bg_color = Color(0.42, 0.25, 0.05, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.8, 0.25, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_access_btn"]
+bg_color = Color(0.1, 0.28, 0.5, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.75, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="LabelSettings" id="LabelSettings_steps"]
+font_size = 15
+font_color = Color(0.85, 0.95, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_objective"]
+bg_color = Color(0.06, 0.09, 0.14, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.55, 0.8, 0.85)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 0.35)
+
+[sub_resource type="LabelSettings" id="LabelSettings_objective"]
+font_size = 15
+font_color = Color(1, 0.95, 0.8, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_math"]
+font_size = 14
+font_color = Color(1, 0.88, 0.35, 1)
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_floating_card"]
+bg_color = Color(0.07, 0.11, 0.18, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.95, 0.75, 0.2, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 12
+shadow_color = Color(0, 0, 0, 0.5)
+
+[sub_resource type="LabelSettings" id="LabelSettings_bncc_head"]
+font_size = 14
+font_color = Color(1, 0.85, 0.35, 1)
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
+bg_color = Color(0.4, 0.15, 0.15, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_bncc_desc"]
+font_size = 13
+font_color = Color(0.85, 0.92, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpad_btn"]
+bg_color = Color(0.12, 0.16, 0.24, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.6, 0.9, 0.8)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="HUD" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_hud_script")
+
+[node name="TopBar" type="PanelContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 52.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_top")
+
+[node name="MarginContainer" type="MarginContainer" parent="TopBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopBar/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="TopBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SokoMath | Fase 1"
+label_settings = SubResource("LabelSettings_title")
+vertical_alignment = 1
+
+[node name="GradeBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(115, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_grade_btn")
+text = "🎒 Mudar Ano"
+
+[node name="PrevBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+text = "◀"
+
+[node name="NextBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+text = "▶"
+
+[node name="UndoBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(90, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+text = "↩ Desfazer"
+
+[node name="RestartBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(90, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_restart_btn")
+text = "🔄 Reiniciar"
+
+[node name="OwlBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(145, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_owl_btn")
+text = "🦉 Justificativa BNCC"
+
+[node name="AccessBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_access_btn")
+text = "♿ Acessibilidade"
+
+[node name="ToggleBNCCBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(85, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+text = "💡 Dica"
+
+[node name="MusicBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(38, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+text = "🎵"
+
+[node name="SfxBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(38, 36)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+text = "🔊"
+
+[node name="StepsLabel" type="Label" parent="TopBar/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "Passos: 0 (Meta: 14)"
+label_settings = SubResource("LabelSettings_steps")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ObjectivePanel" type="PanelContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -310.0
+offset_top = 58.0
+offset_right = 310.0
+offset_bottom = 120.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_objective")
+
+[node name="Margin" type="MarginContainer" parent="ObjectivePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="ObjectivePanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="ObjectiveText" type="Label" parent="ObjectivePanel/Margin/VBox"]
+layout_mode = 2
+text = "🎯 Empurre as caixas nas placas correspondentes!"
+label_settings = SubResource("LabelSettings_objective")
+horizontal_alignment = 1
+
+[node name="MathStatus" type="Label" parent="ObjectivePanel/Margin/VBox"]
+layout_mode = 2
+text = "Operação: Complete o desafio"
+label_settings = SubResource("LabelSettings_math")
+horizontal_alignment = 1
+
+[node name="BNCCFloatingModal" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="BNCCFloatingModal"]
+custom_minimum_size = Vector2(380, 160)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -400.0
+offset_top = 80.0
+offset_right = -20.0
+offset_bottom = 240.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_floating_card")
+
+[node name="Margin" type="MarginContainer" parent="BNCCFloatingModal/Card"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="BNCCFloatingModal/Card/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="BNCCFloatingModal/Card/Margin/VBox"]
+layout_mode = 2
+
+[node name="BNCCCode" type="Label" parent="BNCCFloatingModal/Card/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "📚 EF01MA01"
+label_settings = SubResource("LabelSettings_bncc_head")
+
+[node name="CloseBtn" type="Button" parent="BNCCFloatingModal/Card/Margin/VBox/Header"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+text = "✕"
+
+[node name="BNCCDesc" type="Label" parent="BNCCFloatingModal/Card/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Descrição pedagógica da habilidade da BNCC..."
+label_settings = SubResource("LabelSettings_bncc_desc")
+autowrap_mode = 2
+
+[node name="DismissBtn" type="Button" parent="BNCCFloatingModal/Card/Margin/VBox"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+text = "Entendido"
+
+[node name="VirtualDPad" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -200.0
+offset_right = 214.0
+offset_bottom = -10.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="UpBtn" type="Button" parent="VirtualDPad"]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -29.0
+offset_top = 4.0
+offset_right = 29.0
+offset_bottom = 62.0
+grow_horizontal = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
+text = "▲"
+
+[node name="DownBtn" type="Button" parent="VirtualDPad"]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -29.0
+offset_top = -62.0
+offset_right = 29.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
+text = "▼"
+
+[node name="LeftBtn" type="Button" parent="VirtualDPad"]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 4.0
+offset_top = -29.0
+offset_right = 62.0
+offset_bottom = 29.0
+grow_vertical = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
+text = "◀"
+
+[node name="RightBtn" type="Button" parent="VirtualDPad"]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -62.0
+offset_top = -29.0
+offset_right = -4.0
+offset_bottom = 29.0
+grow_horizontal = 0
+grow_vertical = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
+text = "▶"
+
+[node name="QuickActionContainer" type="HBoxContainer" parent="VirtualDPad"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -60.0
+offset_right = 190.0
+offset_bottom = -6.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="QuickUndoBtn" type="Button" parent="VirtualDPad/QuickActionContainer"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
+text = "↩"
+
+[node name="QuickRestartBtn" type="Button" parent="VirtualDPad/QuickActionContainer"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_restart_btn")
+text = "🔄"

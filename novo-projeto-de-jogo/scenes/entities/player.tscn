@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player_script"]
+[ext_resource type="Texture2D" path="res://kenney_sokoban-pack/PNG/Default size/Player/player_05.png" id="2_player_tex"]
+
+[node name="Player" type="Node2D"]
+script = ExtResource("1_player_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_player_tex")
