@@ -55,7 +55,7 @@ static func get_grade_info(grade: int) -> Dictionary:
 				"name": "5º Ano",
 				"age": "10 a 11 anos",
 				"subtitle": "Expressões Algébricas, Médias e Precedência",
-				"description": "Equações compostas (2A + B e (A+B)×C), critérios de divisibilidade, circuitos lógicos e média aritmética.",
+				"description": "Equações compostas (2A + B e (A+B)*C), critérios de divisibilidade, circuitos lógicos e média aritmética.",
 				"accent_color": Color(0.95, 0.75, 0.2) # Dourado
 			}
 		_:
@@ -782,10 +782,10 @@ static func _level_g4_1() -> Dictionary:
 	return {
 		"grade": 4,
 		"level_index": 0,
-		"title": "4º Ano - Fase 1: A Máquina de Multiplicar ([A] × [B] = %d)" % target,
+		"title": "4º Ano - Fase 1: A Máquina de Multiplicar ([A] * [B] = %d)" % target,
 		"bncc_code": "EF04MA04 / Computação: Produto e Decomposição em Fatores",
 		"bncc_desc": "A multiplicação representa grupos iguais de quantidades. Encontre os dois fatores que multiplicados resultam em %d!" % target,
-		"rule_description": "Encontre os fatores: [A] × [B] = %d" % target,
+		"rule_description": "Encontre os fatores: [A] * [B] = %d" % target,
 		"rule_type": "MULTIPLICATION",
 		"target_value": target,
 		"optimal_steps": 24,
@@ -932,10 +932,10 @@ static func _level_g4_4() -> Dictionary:
 	return {
 		"grade": 4,
 		"level_index": 3,
-		"title": "4º Ano - Fase 4: O Valor Desconhecido (2 × [A] + [B] = %d)" % target,
+		"title": "4º Ano - Fase 4: O Valor Desconhecido (2 * [A] + [B] = %d)" % target,
 		"bncc_code": "EF04MA11 / Computação: Igualdade em Sentenças Matemáticas",
-		"bncc_desc": "O dobro da primeira caixa somado com a segunda precisa ser igual a %d: 2 × [A] + [B] = %d. Calcule as combinações!" % [target, target],
-		"rule_description": "Resolva a sentença: 2 × [A] + [B] = %d" % target,
+		"bncc_desc": "O dobro da primeira caixa somado com a segunda precisa ser igual a %d: 2 * [A] + [B] = %d. Calcule as combinações!" % [target, target],
+		"rule_description": "Resolva a sentença: 2 * [A] + [B] = %d" % target,
 		"rule_type": "EQUATION_2A_PLUS_B",
 		"target_value": target,
 		"optimal_steps": 28,
@@ -960,7 +960,7 @@ static func _level_g4_4() -> Dictionary:
 			{"pos": Vector2i(2, 5), "val": vals[3]["val"], "theme": vals[3]["theme"]}
 		],
 		"plates": [
-			{"pos": Vector2i(7, 2), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot 2×A", "id": "A"},
+			{"pos": Vector2i(7, 2), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot 2*A", "id": "A"},
 			{"pos": Vector2i(7, 4), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot +B", "id": "B"}
 		]
 	}
@@ -1030,8 +1030,8 @@ static func _level_g5_1() -> Dictionary:
 		"level_index": 0,
 		"title": "5º Ano - Fase 1: Expressão e Variáveis (2A + B = %d)" % target,
 		"bncc_code": "EF05MA11 / Computação: Pensamento Algébrico e Resolução de Problemas",
-		"bncc_desc": "Decomponha a equação: 2 × [A] + [B] = %d. Selecione as variáveis corretas planejando a movimentação sem trancar o caminho!" % target,
-		"rule_description": "Resolva a equação: 2 × [A] + [B] = %d" % target,
+		"bncc_desc": "Decomponha a equação: 2 * [A] + [B] = %d. Selecione as variáveis corretas planejando a movimentação sem trancar o caminho!" % target,
+		"rule_description": "Resolva a equação: 2 * [A] + [B] = %d" % target,
 		"rule_type": "EQUATION_2A_PLUS_B",
 		"target_value": target,
 		"optimal_steps": 30,
@@ -1056,7 +1056,7 @@ static func _level_g5_1() -> Dictionary:
 			{"pos": Vector2i(2, 5), "val": vals[3]["val"], "theme": vals[3]["theme"]}
 		],
 		"plates": [
-			{"pos": Vector2i(7, 2), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot 2×A", "id": "A"},
+			{"pos": Vector2i(7, 2), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot 2*A", "id": "A"},
 			{"pos": Vector2i(7, 4), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot +B", "id": "B"}
 		]
 	}
@@ -1182,10 +1182,10 @@ static func _level_g5_4() -> Dictionary:
 	return {
 		"grade": 5,
 		"level_index": 3,
-		"title": "5º Ano - Fase 4: Média Aritmética ((A + B + C) ÷ 3 = %d)" % avg,
+		"title": "5º Ano - Fase 4: Média Aritmética ((A + B + C) / 3 = %d)" % avg,
 		"bncc_code": "EF05MA24 / Computação: Análise de Dados e Agregação Estatística",
 		"bncc_desc": "Agregação de dados: A média aritmética das 3 caixas (soma dos valores dividida por 3) precisa ser exatamente igual a %d." % avg,
-		"rule_description": "Média dos 3 sensores: (A + B + C) ÷ 3 = %d" % avg,
+		"rule_description": "Média dos 3 sensores: (A + B + C) / 3 = %d" % avg,
 		"rule_type": "AVERAGE_3",
 		"target_value": avg,
 		"optimal_steps": 34,
@@ -1239,10 +1239,10 @@ static func _level_g5_5() -> Dictionary:
 	return {
 		"grade": 5,
 		"level_index": 4,
-		"title": "5º Ano - Fase 5: Precedência de Operações (([A] + [B]) × [C] = %d)" % target,
+		"title": "5º Ano - Fase 5: Precedência de Operações (([A] + [B]) * [C] = %d)" % target,
 		"bncc_code": "EF05MA11 / Computação: Ordem de Avaliação e Precedência Algorítmica",
-		"bncc_desc": "Grande Desafio do Ensino Fundamental I: Avalie a expressão com parênteses ([A] + [B]) × [C] = %d. Planeje sua lógica e vença a jornada!" % target,
-		"rule_description": "Resolva a expressão mista: ([A] + [B]) × [C] = %d" % target,
+		"bncc_desc": "Grande Desafio do Ensino Fundamental I: Avalie a expressão com parênteses ([A] + [B]) * [C] = %d. Planeje sua lógica e vença a jornada!" % target,
+		"rule_description": "Resolva a expressão mista: ([A] + [B]) * [C] = %d" % target,
 		"rule_type": "EXPRESSION_COMPOUND",
 		"target_value": target,
 		"optimal_steps": 38,
@@ -1271,6 +1271,6 @@ static func _level_g5_5() -> Dictionary:
 		"plates": [
 			{"pos": Vector2i(8, 2), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot (A)", "id": "comp_A"},
 			{"pos": Vector2i(8, 4), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot (+B)", "id": "comp_B"},
-			{"pos": Vector2i(8, 6), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot (×C)", "id": "comp_C"}
+			{"pos": Vector2i(8, 6), "type": SokoPlate.ConditionType.ANY_VALUE, "val": 0, "label": "Slot (*C)", "id": "comp_C"}
 		]
 	}

@@ -565,7 +565,7 @@ func _evaluate_game_state() -> void:
 			var v2 := in2_box.value if in2_box else 0
 			var and_result := 1 if (v1 == 1 and v2 == 1) else 0
 
-			status_text = "Circuito AND: In1=%s, In2=%s → Saída: %d (%s)" % [
+			status_text = "Circuito AND: In1=%s, In2=%s -> Saída: %d (%s)" % [
 				str(v1) if in1_box else "?",
 				str(v2) if in2_box else "?",
 				and_result,
@@ -581,7 +581,7 @@ func _evaluate_game_state() -> void:
 			var valB := bB.value if bB else 0
 			var eq_result := 2 * valA + valB
 
-			status_text = "Equação: 2 × [%s] + [%s] = %d / Meta: %d" % [
+			status_text = "Equação: 2 * [%s] + [%s] = %d / Meta: %d" % [
 				str(valA) if bA else "?",
 				str(valB) if bB else "?",
 				eq_result if (bA and bB) else 0,
@@ -599,7 +599,7 @@ func _evaluate_game_state() -> void:
 			var b4 := get_box_at(plates[1].grid_pos) if plates.size() > 1 else null
 			var seq_start: Array = current_level.get("seq_start", [2, 5])
 			var seq_op: String = current_level.get("seq_op", "+%d" % target_val)
-			status_text = "Sequência (%s): %s → %s → [%s] → [%s]" % [
+			status_text = "Sequência (%s): %s -> %s -> [%s] -> [%s]" % [
 				seq_op,
 				str(seq_start[0]),
 				str(seq_start[1]),
@@ -628,7 +628,7 @@ func _evaluate_game_state() -> void:
 			var valA := bA.value if bA else 0
 			var valB := bB.value if bB else 0
 			var prod := valA * valB
-			status_text = "Multiplicação: [%s] × [%s] = %d / Meta: %d" % [
+			status_text = "Multiplicação: [%s] * [%s] = %d / Meta: %d" % [
 				str(valA) if bA else "?",
 				str(valB) if bB else "?",
 				prod if (bA and bB) else 0,
@@ -667,7 +667,7 @@ func _evaluate_game_state() -> void:
 				else:
 					txts.append("?")
 			var avg_calc: float = float(sum_v) / 3.0 if count_v == 3 else 0.0
-			status_text = "Média: (%s) ÷ 3 = %.1f / Meta: %d" % [" + ".join(txts), avg_calc, target_val]
+			status_text = "Média: (%s) / 3 = %.1f / Meta: %d" % [" + ".join(txts), avg_calc, target_val]
 			satisfied = (count_v == 3 and sum_v == target_val * 3)
 
 		"EXPRESSION_COMPOUND":
@@ -678,7 +678,7 @@ func _evaluate_game_state() -> void:
 			var vB := bB.value if bB else 0
 			var vC := bC.value if bC else 0
 			var res := (vA + vB) * vC
-			status_text = "Expressão: ([%s] + [%s]) × [%s] = %d / Meta: %d" % [
+			status_text = "Expressão: ([%s] + [%s]) * [%s] = %d / Meta: %d" % [
 				str(vA) if bA else "?",
 				str(vB) if bB else "?",
 				str(vC) if bC else "?",
