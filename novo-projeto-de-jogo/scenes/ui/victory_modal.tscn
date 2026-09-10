@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/victory_modal.gd" id="1_victory_script"]
+[ext_resource type="Texture2D" path="res://assets/icons/restart.svg" id="2_icon_restart"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrow_right.svg" id="3_icon_arrow_right"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_overlay"]
 bg_color = Color(0, 0, 0, 0.6)
@@ -70,7 +72,7 @@ theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2
-text = "🎉 Desafio Concluído!"
+text = "Desafio Concluído!"
 label_settings = SubResource("LabelSettings_vtitle")
 horizontal_alignment = 1
 
@@ -82,7 +84,7 @@ horizontal_alignment = 1
 
 [node name="Stars" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2
-text = "Eficiência Algorítmica: ★ ★ ★"
+text = "Eficiência Algorítmica: [ 3 / 3 ]"
 label_settings = SubResource("LabelSettings_vstars")
 horizontal_alignment = 1
 
@@ -112,10 +114,15 @@ alignment = 1
 custom_minimum_size = Vector2(160, 42)
 layout_mode = 2
 focus_mode = 0
-text = "🔄 Repetir Fase"
+text = " Repetir Fase"
+icon = ExtResource("2_icon_restart")
+expand_icon = true
 
 [node name="NextBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(180, 42)
 layout_mode = 2
 focus_mode = 0
-text = "Próxima Fase ➔"
+text = " Próxima Fase"
+icon = ExtResource("3_icon_arrow_right")
+icon_alignment = 2
+expand_icon = true

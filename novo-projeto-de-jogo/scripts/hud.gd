@@ -193,13 +193,13 @@ func _update_audio_buttons() -> void:
 func update_level_info(level_dict: Dictionary) -> void:
 	var g: int = level_dict.get("grade", 1)
 	if grade_button:
-		grade_button.text = "🎒 %dº Ano ▼" % g
+		grade_button.text = "%dº Ano" % g
 	if title_label:
 		title_label.text = "SokoMath | " + level_dict.get("title", "Fase")
 	if objective_label:
-		objective_label.text = "🎯 " + level_dict.get("rule_description", "")
+		objective_label.text = "Desafio: " + level_dict.get("rule_description", "")
 	if bncc_code_label:
-		bncc_code_label.text = "📚 " + level_dict.get("bncc_code", "BNCC Computação")
+		bncc_code_label.text = level_dict.get("bncc_code", "BNCC Computação")
 	if bncc_desc_label:
 		bncc_desc_label.text = level_dict.get("bncc_desc", "")
 
@@ -227,7 +227,7 @@ func open_bncc_modal() -> void:
 	_is_bncc_open = true
 	bncc_modal.visible = true
 	if toggle_bncc_button:
-		toggle_bncc_button.text = "📖 Fechar"
+		toggle_bncc_button.text = "Fechar"
 
 	bncc_card.scale = Vector2(0.85, 0.85)
 	bncc_card.modulate.a = 0.0
@@ -243,7 +243,7 @@ func close_bncc_modal() -> void:
 	_is_bncc_open = false
 	_stop_floating_animation()
 	if toggle_bncc_button:
-		toggle_bncc_button.text = "💡 Dica"
+		toggle_bncc_button.text = "Dica"
 
 	var close_tween := create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	close_tween.tween_property(bncc_card, "scale", Vector2(0.85, 0.85), 0.18)

@@ -1,6 +1,8 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/pedagogical_modal.gd" id="1_pedagogical_script"]
+[ext_resource type="Texture2D" path="res://assets/icons/copy.svg" id="2_icon_copy"]
+[ext_resource type="Texture2D" path="res://assets/icons/close.svg" id="3_icon_close"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.08, 0.11, 0.16, 0.98)
@@ -99,7 +101,7 @@ theme_override_constants/separation = 12
 [node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "🦉 Justificativa Pedagógica & Matriz BNCC"
+text = "Justificativa Pedagógica & Matriz BNCC"
 label_settings = SubResource("LabelSettings_title")
 
 [node name="CopyStatus" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
@@ -107,18 +109,22 @@ layout_mode = 2
 label_settings = SubResource("LabelSettings_status")
 
 [node name="CopyBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
-custom_minimum_size = Vector2(190, 36)
+custom_minimum_size = Vector2(210, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_copy_btn")
-text = "📋 Copiar Texto Completo"
+text = " Copiar Texto Completo"
+icon = ExtResource("2_icon_copy")
+expand_icon = true
 
 [node name="CloseBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
-text = "✕"
+icon = ExtResource("3_icon_close")
+icon_alignment = 1
+expand_icon = true
 
 [node name="TextPanel" type="PanelContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2

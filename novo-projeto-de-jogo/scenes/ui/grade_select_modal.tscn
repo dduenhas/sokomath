@@ -1,6 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/grade_select_modal.gd" id="1_grade_select_script"]
+[ext_resource type="Texture2D" path="res://assets/icons/music.svg" id="2_icon_music"]
+[ext_resource type="Texture2D" path="res://assets/icons/sound.svg" id="3_icon_sound"]
+[ext_resource type="Texture2D" path="res://assets/icons/close.svg" id="4_icon_close"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_overlay"]
 bg_color = Color(0.04, 0.06, 0.09, 0.88)
@@ -88,7 +91,7 @@ size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header/TitleBox"]
 layout_mode = 2
-text = "🎒 Selecione o Ano Escolar (Ensino Fundamental I)"
+text = "Selecione o Ano Escolar (Ensino Fundamental I)"
 label_settings = SubResource("LabelSettings_modal_title")
 
 [node name="Subtitle" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header/TitleBox"]
@@ -107,22 +110,28 @@ custom_minimum_size = Vector2(108, 32)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_audio_btn")
-text = "🎵 Música"
+text = " Música"
+icon = ExtResource("2_icon_music")
+expand_icon = true
 
 [node name="SfxBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header/AudioControls"]
 custom_minimum_size = Vector2(108, 32)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_audio_btn")
-text = "🔊 Efeitos"
+text = " Efeitos"
+icon = ExtResource("3_icon_sound")
+expand_icon = true
 
 [node name="CloseBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
-custom_minimum_size = Vector2(80, 32)
+custom_minimum_size = Vector2(90, 32)
 layout_mode = 2
 size_flags_vertical = 4
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
-text = "✖ Fechar"
+text = " Fechar"
+icon = ExtResource("4_icon_close")
+expand_icon = true
 
 [node name="ScrollCards" type="ScrollContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2

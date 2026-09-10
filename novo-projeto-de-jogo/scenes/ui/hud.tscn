@@ -1,6 +1,19 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud_script"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrow_up.svg" id="2_icon_up"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrow_down.svg" id="3_icon_down"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrow_left.svg" id="4_icon_left"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrow_right.svg" id="5_icon_right"]
+[ext_resource type="Texture2D" path="res://assets/icons/undo.svg" id="6_icon_undo"]
+[ext_resource type="Texture2D" path="res://assets/icons/restart.svg" id="7_icon_restart"]
+[ext_resource type="Texture2D" path="res://assets/icons/owl.svg" id="8_icon_owl"]
+[ext_resource type="Texture2D" path="res://assets/icons/accessibility.svg" id="9_icon_access"]
+[ext_resource type="Texture2D" path="res://assets/icons/hint.svg" id="10_icon_hint"]
+[ext_resource type="Texture2D" path="res://assets/icons/grade.svg" id="11_icon_grade"]
+[ext_resource type="Texture2D" path="res://assets/icons/music.svg" id="12_icon_music"]
+[ext_resource type="Texture2D" path="res://assets/icons/sound.svg" id="13_icon_sound"]
+[ext_resource type="Texture2D" path="res://assets/icons/close.svg" id="14_icon_close"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
 bg_color = Color(0.06, 0.08, 0.12, 0.95)
@@ -176,74 +189,94 @@ label_settings = SubResource("LabelSettings_title")
 vertical_alignment = 1
 
 [node name="GradeBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(115, 36)
+custom_minimum_size = Vector2(125, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_grade_btn")
-text = "🎒 Mudar Ano"
+text = " Mudar Ano"
+icon = ExtResource("11_icon_grade")
+expand_icon = true
 
 [node name="PrevBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 36)
+custom_minimum_size = Vector2(46, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
-text = "◀"
+icon = ExtResource("4_icon_left")
+icon_alignment = 1
+expand_icon = true
 
 [node name="NextBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 36)
+custom_minimum_size = Vector2(46, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
-text = "▶"
+icon = ExtResource("5_icon_right")
+icon_alignment = 1
+expand_icon = true
 
 [node name="UndoBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(90, 36)
+custom_minimum_size = Vector2(105, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
-text = "↩ Desfazer"
+text = " Desfazer"
+icon = ExtResource("6_icon_undo")
+expand_icon = true
 
 [node name="RestartBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(90, 36)
+custom_minimum_size = Vector2(105, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_restart_btn")
-text = "🔄 Reiniciar"
+text = " Reiniciar"
+icon = ExtResource("7_icon_restart")
+expand_icon = true
 
 [node name="OwlBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(145, 36)
+custom_minimum_size = Vector2(170, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_owl_btn")
-text = "🦉 Justificativa BNCC"
+text = " Justificativa BNCC"
+icon = ExtResource("8_icon_owl")
+expand_icon = true
 
 [node name="AccessBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(120, 36)
+custom_minimum_size = Vector2(140, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_access_btn")
-text = "♿ Acessibilidade"
+text = " Acessibilidade"
+icon = ExtResource("9_icon_access")
+expand_icon = true
 
 [node name="ToggleBNCCBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(85, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
-text = "💡 Dica"
+text = " Dica"
+icon = ExtResource("10_icon_hint")
+expand_icon = true
 
 [node name="MusicBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(38, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
-text = "🎵"
+icon = ExtResource("12_icon_music")
+icon_alignment = 1
+expand_icon = true
 
 [node name="SfxBtn" type="Button" parent="TopBar/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(38, 36)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
-text = "🔊"
+icon = ExtResource("13_icon_sound")
+icon_alignment = 1
+expand_icon = true
 
 [node name="StepsLabel" type="Label" parent="TopBar/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(125, 0)
@@ -277,7 +310,7 @@ theme_override_constants/separation = 2
 
 [node name="ObjectiveText" type="Label" parent="ObjectivePanel/Margin/VBox"]
 layout_mode = 2
-text = "🎯 Empurre as caixas nas placas correspondentes!"
+text = "Empurre as caixas nas placas correspondentes!"
 label_settings = SubResource("LabelSettings_objective")
 horizontal_alignment = 1
 
@@ -327,7 +360,7 @@ layout_mode = 2
 [node name="BNCCCode" type="Label" parent="BNCCFloatingModal/Card/Margin/VBox/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "📚 EF01MA01"
+text = "EF01MA01"
 label_settings = SubResource("LabelSettings_bncc_head")
 
 [node name="CloseBtn" type="Button" parent="BNCCFloatingModal/Card/Margin/VBox/Header"]
@@ -335,7 +368,9 @@ custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
-text = "✕"
+icon = ExtResource("14_icon_close")
+icon_alignment = 1
+expand_icon = true
 
 [node name="BNCCDesc" type="Label" parent="BNCCFloatingModal/Card/Margin/VBox"]
 layout_mode = 2
@@ -375,9 +410,10 @@ offset_right = 29.0
 offset_bottom = 62.0
 grow_horizontal = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
-text = "▲"
+icon = ExtResource("2_icon_up")
+icon_alignment = 1
+expand_icon = true
 
 [node name="DownBtn" type="Button" parent="VirtualDPad"]
 custom_minimum_size = Vector2(58, 58)
@@ -394,9 +430,10 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
 focus_mode = 0
-theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
-text = "▼"
+icon = ExtResource("3_icon_down")
+icon_alignment = 1
+expand_icon = true
 
 [node name="LeftBtn" type="Button" parent="VirtualDPad"]
 custom_minimum_size = Vector2(58, 58)
@@ -410,9 +447,10 @@ offset_right = 62.0
 offset_bottom = 29.0
 grow_vertical = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
-text = "◀"
+icon = ExtResource("4_icon_left")
+icon_alignment = 1
+expand_icon = true
 
 [node name="RightBtn" type="Button" parent="VirtualDPad"]
 custom_minimum_size = Vector2(58, 58)
@@ -429,9 +467,10 @@ offset_bottom = 29.0
 grow_horizontal = 0
 grow_vertical = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_dpad_btn")
-text = "▶"
+icon = ExtResource("5_icon_right")
+icon_alignment = 1
+expand_icon = true
 
 [node name="QuickActionContainer" type="HBoxContainer" parent="VirtualDPad"]
 layout_mode = 1
@@ -452,14 +491,16 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(64, 52)
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_action_btn")
-text = "↩"
+icon = ExtResource("6_icon_undo")
+icon_alignment = 1
+expand_icon = true
 
 [node name="QuickRestartBtn" type="Button" parent="VirtualDPad/QuickActionContainer"]
 custom_minimum_size = Vector2(64, 52)
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_restart_btn")
-text = "🔄"
+icon = ExtResource("7_icon_restart")
+icon_alignment = 1
+expand_icon = true

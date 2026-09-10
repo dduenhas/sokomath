@@ -184,7 +184,7 @@ static func _level_g1_2() -> Dictionary:
 		]
 	}
 
-# Fase 1.3: A Ordem das Coisas (1 ➔ 2 ➔ 3)
+# Fase 1.3: A Ordem das Coisas (1 -> 2 -> 3)
 static func _level_g1_3() -> Dictionary:
 	return {
 		"grade": 1,
@@ -192,7 +192,7 @@ static func _level_g1_3() -> Dictionary:
 		"title": "1º Ano - Fase 3: Ordem Crescente (1, 2, 3)",
 		"bncc_code": "EF01MA09 / Computação: Ordenação de Dados e Arrays",
 		"bncc_desc": "Na computação, organizar itens em ordem crescente facilita a busca. Complete a trilha com os números 1, 2 e 3 em sequência!",
-		"rule_description": "Organize as caixas em ordem: [ 1 ] ➔ [ 2 ] ➔ [ 3 ]",
+		"rule_description": "Organize as caixas em ordem: [ 1 ] -> [ 2 ] -> [ 3 ]",
 		"rule_type": "ORDER_ASCENDING",
 		"target_value": 3,
 		"optimal_steps": 18,
@@ -448,8 +448,8 @@ static func _level_g2_4() -> Dictionary:
 		"level_index": 3,
 		"title": "2º Ano - Fase 4: Pulo de 2 em 2",
 		"bncc_code": "EF02MA09 / Computação: Padrões de Repetição e Passo Fixo (+2)",
-		"bncc_desc": "Observe o padrão repetitivo: %d ➔ %d ➔ [ ? ]. Descubra qual é o próximo número da sequência e coloque-o na placa!" % [start, t2],
-		"rule_description": "Complete a sequência (+2): %d ➔ %d ➔ [ ? ]" % [start, t2],
+		"bncc_desc": "Observe o padrão repetitivo: %d -> %d -> [ ? ]. Descubra qual é o próximo número da sequência e coloque-o na placa!" % [start, t2],
+		"rule_description": "Complete a sequência (+2): %d -> %d -> [ ? ]" % [start, t2],
 		"rule_type": "TARGET_PLATES",
 		"target_value": t3,
 		"optimal_steps": 14,
@@ -651,8 +651,8 @@ static func _level_g3_3() -> Dictionary:
 		"level_index": 2,
 		"title": "3º Ano - Fase 3: Sequência de Saltos (+%d)" % step_size,
 		"bncc_code": "EF03MA10 / Computação: Regularidades e Iterações de Laço",
-		"bncc_desc": "Identifique a regra recursiva da sequência: %d ➔ %d ➔ [ ? ] ➔ [ ? ]. Posicione os dois próximos números nos sensores!" % [t1, t2],
-		"rule_description": "Complete a sequência (+%d): %d ➔ %d ➔ [ ? ] ➔ [ ? ]" % [step_size, t1, t2],
+		"bncc_desc": "Identifique a regra recursiva da sequência: %d -> %d -> [ ? ] -> [ ? ]. Posicione os dois próximos números nos sensores!" % [t1, t2],
+		"rule_description": "Complete a sequência (+%d): %d -> %d -> [ ? ] -> [ ? ]" % [step_size, t1, t2],
 		"rule_type": "SEQUENCE_PA",
 		"target_value": step_size,
 		"seq_start": [t1, t2],
@@ -970,14 +970,14 @@ static func _level_g4_5() -> Dictionary:
 	return {
 		"grade": 4,
 		"level_index": 4,
-		"title": "4º Ano - Fase 5: O Padrão do Dobro (×2)",
+		"title": "4º Ano - Fase 5: O Padrão do Dobro (x2)",
 		"bncc_code": "EF04MA11 / Computação: Sequências Geométricas e Escalaridade",
-		"bncc_desc": "Observe o crescimento multiplicativo: 2 ➔ 4 ➔ [ ? ] ➔ [ ? ]. Cada número é o dobro do anterior (×2). Calcule e posicione os próximos números nos sensores!",
-		"rule_description": "Complete o padrão do dobro (×2): 2 ➔ 4 ➔ [ ? ] ➔ [ ? ]",
+		"bncc_desc": "Observe o crescimento multiplicativo: 2 -> 4 -> [ ? ] -> [ ? ]. Cada número é o dobro do anterior (x2). Calcule e posicione os próximos números nos sensores!",
+		"rule_description": "Complete o padrão do dobro (x2): 2 -> 4 -> [ ? ] -> [ ? ]",
 		"rule_type": "SEQUENCE_PA",
 		"target_value": 8,
 		"seq_start": [2, 4],
-		"seq_op": "×2",
+		"seq_op": "x2",
 		"optimal_steps": 30,
 		"grid_width": 11,
 		"grid_height": 8,

@@ -53,11 +53,11 @@ func _update_audio_buttons() -> void:
 		var sfx_on: bool = SoundManager.instance.is_sfx_enabled()
 		if music_btn:
 			music_btn.modulate.a = 1.0 if mus_on else 0.35
-			music_btn.text = "🎵 Música" if mus_on else "🔇 Sem Música"
+			music_btn.text = " Música"
 			music_btn.tooltip_text = "Música: Ativada (Clique para desativar)" if mus_on else "Música: Desativada (Clique para ativar)"
 		if sfx_btn:
 			sfx_btn.modulate.a = 1.0 if sfx_on else 0.35
-			sfx_btn.text = "🔊 Efeitos" if sfx_on else "🔈 Sem Efeitos"
+			sfx_btn.text = " Efeitos"
 			sfx_btn.tooltip_text = "Efeitos Sonoros: Ativados (Clique para desativar)" if sfx_on else "Efeitos Sonoros: Desativados (Clique para ativar)"
 
 func close() -> void:
@@ -123,7 +123,7 @@ func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 
 	# Age label
 	var age_label := Label.new()
-	age_label.text = "👶 " + info.get("age", "")
+	age_label.text = "Idade: " + info.get("age", "")
 	age_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	age_label.add_theme_font_size_override("font_size", 12)
 	age_label.add_theme_color_override("font_color", Color(0.8, 0.9, 1.0))
@@ -177,7 +177,9 @@ func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 
 	# Primary Play Battery Button
 	var start_btn := Button.new()
-	start_btn.text = "▶ Jogar Bateria"
+	start_btn.text = "Jogar Bateria"
+	start_btn.icon = preload("res://assets/icons/arrow_right.svg")
+	start_btn.expand_icon = true
 	start_btn.custom_minimum_size = Vector2(0, 36)
 	start_btn.focus_mode = Control.FOCUS_NONE
 	var start_style := StyleBoxFlat.new()

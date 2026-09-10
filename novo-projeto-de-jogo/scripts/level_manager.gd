@@ -499,26 +499,26 @@ func _evaluate_game_state() -> void:
 			for p in plates:
 				var b := get_box_at(p.grid_pos)
 				if b:
-					parts.append(str(b.value) + (" (✓)" if p.is_satisfied else " (✗)"))
+					parts.append(str(b.value) + (" [OK]" if p.is_satisfied else " [X]"))
 				else:
 					parts.append("?")
 				if not p.is_satisfied:
 					all_ok = false
-			status_text = "Ordem: " + " ➔ ".join(parts)
+			status_text = "Ordem: " + " -> ".join(parts)
 			satisfied = all_ok
 
 		"MINIMUM_VALUE":
 			var p_ok := plates.size() > 0 and plates[0].is_satisfied
 			var b := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var b_str := str(b.value) if b else "?"
-			status_text = "Caixa no Sensor: [%s] (%s)" % [b_str, "✓ Menor Valor Correto!" if p_ok else "Aguardando o menor número"]
+			status_text = "Caixa no Sensor: [%s] (%s)" % [b_str, "Menor Valor Correto!" if p_ok else "Aguardando o menor número"]
 			satisfied = p_ok
 
 		"CONDITION_SINGLE":
 			var p_ok := plates.size() > 0 and plates[0].is_satisfied
 			var b := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var b_str := str(b.value) if b else "?"
-			status_text = "Condição do Sensor: [%s] (%s)" % [b_str, "✓ Ativada" if p_ok else "Pendente"]
+			status_text = "Condição do Sensor: [%s] (%s)" % [b_str, "Ativada" if p_ok else "Pendente"]
 			satisfied = p_ok
 
 		"CONDITIONAL_EVEN_ODD":
@@ -526,8 +526,8 @@ func _evaluate_game_state() -> void:
 			var p2_ok := plates.size() > 1 and plates[1].is_satisfied
 			var b1 := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var b2 := get_box_at(plates[1].grid_pos) if plates.size() > 1 else null
-			var t1 := (str(b1.value) + " (✓)") if p1_ok else (str(b1.value) + " (✗)") if b1 else "?"
-			var t2 := (str(b2.value) + " (✓)") if p2_ok else (str(b2.value) + " (✗)") if b2 else "?"
+			var t1 := (str(b1.value) + " [OK]") if p1_ok else (str(b1.value) + " [X]") if b1 else "?"
+			var t2 := (str(b2.value) + " [OK]") if p2_ok else (str(b2.value) + " [X]") if b2 else "?"
 			status_text = "PAR: [%s] | ÍMPAR: [%s]" % [t1, t2]
 			satisfied = (p1_ok and p2_ok)
 
@@ -552,8 +552,8 @@ func _evaluate_game_state() -> void:
 			var p1_box := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var p2_box := get_box_at(plates[1].grid_pos) if plates.size() > 1 else null
 
-			var p1_txt: String = (str(p1_box.value) + " (✓)") if p1_ok else (str(p1_box.value) + " (✗)") if p1_box else "?"
-			var p2_txt: String = (str(p2_box.value) + " (✓)") if p2_ok else (str(p2_box.value) + " (✗)") if p2_box else "?"
+			var p1_txt: String = (str(p1_box.value) + " [OK]") if p1_ok else (str(p1_box.value) + " [X]") if p1_box else "?"
+			var p2_txt: String = (str(p2_box.value) + " [OK]") if p2_ok else (str(p2_box.value) + " [X]") if p2_box else "?"
 			status_text = "IF PAR: [%s] | IF > %d: [%s]" % [p1_txt, target_val, p2_txt]
 			satisfied = (p1_ok and p2_ok)
 
@@ -645,7 +645,7 @@ func _evaluate_game_state() -> void:
 				if b:
 					count_filled += 1
 					var is_div := (b.value % target_val == 0)
-					txts.append("%d (%s)" % [b.value, "✓" if is_div else "✗"])
+					txts.append("%d (%s)" % [b.value, "OK" if is_div else "X"])
 					if not is_div:
 						all_div = false
 				else:

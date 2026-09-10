@@ -42,12 +42,8 @@ func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool
 		steps_label.text = "Passos executados: %d | Custo ótimo: %d" % [steps, optimal]
 
 	if stars_label:
-		var s := ""
-		for i in range(stars):
-			s += "★ "
-		for i in range(3 - stars):
-			s += "☆ "
-		stars_label.text = "Eficiência Algorítmica: " + s.strip_edges()
+		var rating_str := "Excelente [ 3 / 3 ]" if stars == 3 else "Muito Bom [ 2 / 3 ]" if stars == 2 else "Bom [ 1 / 3 ]"
+		stars_label.text = "Eficiência Algorítmica: %s" % rating_str
 
 	if message_label:
 		message_label.text = "Conceito consolidado: " + level_dict.get("bncc_code", "")
@@ -55,19 +51,19 @@ func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool
 	if title_label:
 		if is_final_grade_level:
 			if grade >= 5:
-				title_label.text = "🎓 Ensino Fundamental I Concluído!"
+				title_label.text = "Ensino Fundamental I Concluído!"
 			else:
-				title_label.text = "🏆 %dº Ano Concluído com Sucesso!" % grade
+				title_label.text = "%dº Ano Concluído com Sucesso!" % grade
 		else:
-			title_label.text = "🎉 Desafio Concluído!"
+			title_label.text = "Desafio Concluído!"
 
 	if next_btn:
 		if is_final_grade_level:
 			if grade >= 5:
-				next_btn.text = "🏆 Concluir e Escolher Ano"
+				next_btn.text = " Concluir e Escolher Ano"
 			else:
-				next_btn.text = "Avançar para o %dº Ano ➔" % (grade + 1)
+				next_btn.text = " Avançar para o %dº Ano" % (grade + 1)
 		else:
-			next_btn.text = "Próxima Fase ➔"
+			next_btn.text = " Próxima Fase"
 
 	show()

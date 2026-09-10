@@ -78,7 +78,7 @@ func update_appearance() -> void:
 				ConditionType.LOGIC_TRUE:
 					tag_label.text = "1"
 				_:
-					tag_label.text = "★"
+					tag_label.text = "*"
 
 	_update_visual_state(false)
 
