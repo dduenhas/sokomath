@@ -59,7 +59,11 @@ git log -1 --format="Autor: %an <%ae>%nData: %ad%nMensagem: %s"
 ```
 
 ### 6. Enviar para o Remoto (Push)
+Se o terminal necessitar de autenticação de credenciais com o GitHub CLI conectado:
+```powershell
+gh auth setup-git
+```
 Envie para o branch principal ou o branch ativo no GitHub:
 ```powershell
-git push origin main
+git push -u origin main
 ```
