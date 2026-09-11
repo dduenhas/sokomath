@@ -36,15 +36,25 @@ Em consonância com o Complemento à Base Nacional Comum Curricular (Resolução
 
 ## 📚 Matriz Curricular por Ano Escolar (BNCC Matemática)
 
-O jogo organiza seus desafios progressivamente do 1º ao 5º ano do Ensino Fundamental I:
+O jogo organiza seus desafios progressivamente do 1º ao 5º ano do Ensino Fundamental I, contando com **10 fases progressivas por ano letivo** (**50 fases pedagógicas no total**):
 
-| Ano | Faixa Etária | Temática Central | Habilidades BNCC Principais | Mecânica no Jogo |
-| :--- | :--- | :--- | :--- | :--- |
-| **1º Ano** | 6 a 7 anos | Fundamentos Lógicos e Sequências | **EF01MA01, EF01MA02, EF01MA09, EF01MA10** | Contagem simples, correspondência 1 a 1 e ordenação crescente (1, 2, 3). |
-| **2º Ano** | 7 a 8 anos | Paridade e Comparações | **EF02MA01, EF02MA05, EF02MA06, EF02MA09** | Filtros de números pares e ímpares, desigualdades relacionais (> e <). |
-| **3º Ano** | 8 a 9 anos | Operações Aritméticas e Saltos | **EF03MA05, EF03MA06, EF03MA10** | Adição e subtração como operações inversas, cálculo mental e saltos aritméticos. |
-| **4º Ano** | 9 a 10 anos | Multiplicação e Portas Lógicas | **EF04MA04, EF04MA05, EF04MA11, EF04MA12** | Fatores, múltiplos comuns e circuitos lógicos (placas com operador booleano AND). |
-| **5º Ano** | 10 a 11 anos | Expressões Numéricas e Precedência | **EF05MA07, EF05MA08, EF05MA10, EF05MA11** | Expressões compostas, ordem de operações aritméticas e equações combinadas. |
+| Ano | Fases | Faixa Etária | Temática Central | Habilidades BNCC Principais | Mecânica no Jogo |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **1º Ano** | 10 Níveis | 6 a 7 anos | Fundamentos Lógicos e Sequências | **EF01MA01, EF01MA02, EF01MA09, EF01MA10** | Contagem simples, correspondência 1 a 1 e ordenação crescente (1, 2, 3). |
+| **2º Ano** | 10 Níveis | 7 a 8 anos | Paridade e Comparações | **EF02MA01, EF02MA05, EF02MA06, EF02MA09** | Filtros de números pares e ímpares, desigualdades relacionais (> e <). |
+| **3º Ano** | 10 Níveis | 8 a 9 anos | Operações Aritméticas e Saltos | **EF03MA05, EF03MA06, EF03MA10** | Adição e subtração como operações inversas, cálculo mental e saltos aritméticos. |
+| **4º Ano** | 10 Níveis | 9 a 10 anos | Multiplicação e Portas Lógicas | **EF04MA04, EF04MA05, EF04MA11, EF04MA12** | Fatores, múltiplos comuns e circuitos lógicos (placas com operador booleano AND). |
+| **5º Ano** | 10 Níveis | 10 a 11 anos | Expressões Numéricas e Precedência | **EF05MA07, EF05MA08, EF05MA10, EF05MA11** | Expressões compostas, ordem de operações aritméticas e equações combinadas. |
+
+---
+
+## 🏆 Modo Bônus: Sokoban Clássico (10 Fases Dinâmicas)
+
+Ao concluir as 10 fases de qualquer ano letivo (ou diretamente pelo menu de seleção), o jogador desbloqueia o **Modo Prêmio: Sokoban Clássico**:
+* **Lógica Tradicional de Desobstrução:** Pura mecânica de puzzle espacial e pensamento algorítmico, onde caixas bloqueiam passagens estratégicas. O objetivo é desviar as caixas para nichos de armazenagem laterais a fim de liberar o caminho até a saída.
+* **10 Níveis Exclusivos de Desafio:** Variando de 1 a 4 caixas e progressão de 6 a 15 empurrões mínimos (*O Primeiro Corredor*, *A Encruzilhada em T*, *O Gargalo Central*, *O Circuito do Pilar*, *O Desvio em S*, *Câmaras Conectadas*, *Corredor de Armazenagem*, *O Pátio Oposto*, *A Grande Ala* e *O Enigma do Mestre Sokoban*).
+* **Geração e Variação Dinâmica:** A cada partida, o gerador aplica espelhamentos verticais/horizontais e temas visuais variados, criando tabuleiros com visual renovado a cada tentativa sem perder a solubilidade matemática.
+* **Caminho até a Saída:** Posicionar as caixas nos nichos destranca o portão; em seguida, o jogador guia o personagem até a saída para celebrar a vitória.
 
 ---
 
@@ -73,10 +83,11 @@ O jogo conta com um botão dedicado com o ícone da **Corujinha Pedagógica (�
 
 ### Teclado (Desktop)
 * **Movimentação:** `W`, `A`, `S`, `D` ou `Setas Direcionais`
+* **Avançar para Próxima Fase:** Tecla `ESPAÇO` ou `ENTER` no Modal de Vitória
 * **Desfazer Passo (Undo):** `Z`
 * **Reiniciar Nível:** `R`
 * **Menu de Séries / Anos:** `M` ou `TAB`
-* **Atalhos Rápidos de Fase:** Teclas numéricas `1`, `2`, `3`, `4`, `5`
+* **Atalhos Rápidos de Fase:** Teclas numéricas `1` a `5` (ou botões `◀` e `▶` na barra superior)
 
 ### Touchscreen (Smartphones e Tablets)
 * **D-Pad Virtual na Tela:** Botões direcionais `▲`, `▼`, `◀`, `▶` na base esquerda da tela.
