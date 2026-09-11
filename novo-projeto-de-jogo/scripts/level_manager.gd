@@ -66,6 +66,10 @@ func _ready() -> void:
 	if victory_modal:
 		victory_modal.next_level_selected.connect(load_next_level)
 		victory_modal.retry_level_selected.connect(restart_current_level)
+		victory_modal.grade_modal_selected.connect(open_grade_modal)
+		victory_modal.claim_prize_selected.connect(func():
+			load_grade_level(0, 0)
+		)
 	if grade_modal:
 		grade_modal.grade_and_level_selected.connect(on_grade_and_level_selected)
 		grade_modal.closed.connect(func():
@@ -202,12 +206,15 @@ func load_level(idx: int) -> void:
 	load_grade_level(current_grade, idx)
 
 func load_grade_level(grade: int, idx: int) -> void:
-	current_grade = clampi(grade, 1, 5)
-	var total_levels := LevelData.get_level_count(current_grade)
+	current_grade = clampi(grade, 0, 5)
+	var total_levels := 10
 	if idx < 0 or idx >= total_levels:
 		idx = 0
 	current_level_index = idx
-	current_level = LevelData.get_level_instance(current_grade, current_level_index)
+	if current_grade == 0:
+		current_level = ClassicSokobanGenerator.generate_level(current_level_index)
+	else:
+		current_level = LevelData.get_level_instance(current_grade, current_level_index)
 	is_completed = false
 	is_door_open = false
 	step_count = 0
@@ -304,13 +311,21 @@ func _spawn_entities() -> void:
 
 	# Boxes
 	var crates_data: Array = current_level.get("crates", [])
+	var is_classic: bool = current_level.get("is_classic", current_grade == 0)
+
+	# Sanitização dinâmica de segurança contra blocos grudados na parede (apenas fases BNCC)
+	if current_grade > 0:
+		_sanitize_crates_from_walls(crates_data)
+
 	for c_data in crates_data:
 		var box_node: SokoBox = BOX_SCENE.instantiate()
 		boxes_container.add_child(box_node)
+		var show_badge: bool = c_data.get("show_badge", not is_classic)
 		box_node.setup(
 			c_data.get("pos", Vector2i.ZERO),
 			c_data.get("val", 1),
-			c_data.get("theme", "wood")
+			c_data.get("theme", "wood"),
+			show_badge
 		)
 		boxes.append(box_node)
 
@@ -319,6 +334,51 @@ func _spawn_entities() -> void:
 	player = PLAYER_SCENE.instantiate()
 	entities_container.add_child(player)
 	player.setup(p_start)
+
+func _sanitize_crates_from_walls(crates_data: Array) -> void:
+	var w: int = current_level.get("grid_width", 10)
+	var h: int = current_level.get("grid_height", 8)
+	var p_start: Vector2i = current_level.get("player_start", Vector2i(1, 1))
+
+	var occupied: Dictionary = {}
+	for p_data in current_level.get("plates", []):
+		occupied[p_data.get("pos", Vector2i.ZERO)] = true
+	occupied[p_start] = true
+
+	var dirs := [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
+
+	for i in range(crates_data.size()):
+		var c_pos: Vector2i = crates_data[i].get("pos", Vector2i.ZERO)
+		var touches_wall := false
+
+		for d in dirs:
+			if walls_set.has(c_pos + d):
+				touches_wall = true
+				break
+
+		if touches_wall:
+			var best_cell := c_pos
+			var min_dist := 9999.0
+			for x in range(2, w - 2):
+				for y in range(2, h - 2):
+					var cand := Vector2i(x, y)
+					if not walls_set.has(cand) and not occupied.has(cand):
+						var cand_touches := false
+						for d in dirs:
+							if walls_set.has(cand + d):
+								cand_touches = true
+								break
+						if not cand_touches:
+							var d_val := Vector2(cand - c_pos).length()
+							if d_val < min_dist:
+								min_dist = d_val
+								best_cell = cand
+			if best_cell != c_pos:
+				push_warning("[SokoMath] Caixa reposicionada de %s para %s para evitar encostar em parede." % [c_pos, best_cell])
+				crates_data[i]["pos"] = best_cell
+				occupied[best_cell] = true
+		else:
+			occupied[c_pos] = true
 
 func _center_camera_or_level() -> void:
 	if current_level.is_empty():
@@ -484,17 +544,17 @@ func restart_current_level() -> void:
 	load_grade_level(current_grade, current_level_index)
 
 func load_prev_level() -> void:
-	var total_levels := LevelData.get_level_count(current_grade)
+	var total_levels := 10
 	var prev_idx := current_level_index - 1
 	if prev_idx < 0:
 		prev_idx = total_levels - 1
 	load_grade_level(current_grade, prev_idx)
 
 func load_next_level() -> void:
-	var total_levels := LevelData.get_level_count(current_grade)
+	var total_levels := 10
 	var next_idx := current_level_index + 1
 	if next_idx >= total_levels:
-		if current_grade < 5:
+		if current_grade > 0 and current_grade < 5:
 			load_grade_level(current_grade + 1, 0)
 		else:
 			open_grade_modal()
@@ -726,6 +786,14 @@ func _evaluate_game_state() -> void:
 	elif not satisfied and is_door_open:
 		_close_door()
 
+	# Conclusão Automática para Sokoban Clássico:
+	# No Sokoban tradicional, colocar todas as caixas nos alvos já é a vitória do puzzle!
+	var is_classic: bool = current_level.get("is_classic", current_grade == 0)
+	if is_classic and satisfied and not is_completed:
+		await get_tree().create_timer(0.35).timeout
+		if is_inside_tree() and not is_completed and is_door_open:
+			_trigger_victory()
+
 func _open_door() -> void:
 	is_door_open = true
 	SoundManager.play("plate", 0.05)
@@ -782,7 +850,7 @@ func _trigger_victory() -> void:
 		return
 	is_completed = true
 	SoundManager.play("win")
-	var is_final_grade_level := (current_level_index == LevelData.get_level_count(current_grade) - 1)
+	var is_final_grade_level := (current_level_index == 9)
 	if victory_modal:
 		victory_modal.show_victory(current_level, step_count, is_final_grade_level, current_grade)
 	level_completed.emit(current_level, step_count)

@@ -70,15 +70,20 @@ func _build_grade_cards() -> void:
 	for child in cards_container.get_children():
 		child.queue_free()
 
+	# 1º ao 5º Ano
 	var grades := LevelData.get_grades()
 	for g in grades:
 		var info: Dictionary = LevelData.get_grade_info(g)
 		var card := _create_grade_card(g, info)
 		cards_container.add_child(card)
 
+	# Card Especial de Prêmio (Sokoban Clássico sem Matemática)
+	var classic_card := _create_classic_card()
+	cards_container.add_child(classic_card)
+
 func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(215, 420)
+	card.custom_minimum_size = Vector2(215, 430)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
@@ -104,7 +109,7 @@ func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 	card.add_child(margin)
 
 	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
+	vbox.add_theme_constant_override("separation", 6)
 	margin.add_child(vbox)
 
 	# Tag Badge (Ano)
@@ -147,23 +152,23 @@ func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(desc_label)
 
-	# Level Grid / Buttons (1 a 5)
+	# Level Grid / Buttons (1 a 10 em 2 linhas)
 	var lvl_box := VBoxContainer.new()
-	lvl_box.add_theme_constant_override("separation", 4)
+	lvl_box.add_theme_constant_override("separation", 3)
 
 	var lvl_title := Label.new()
-	lvl_title.text = "Escolher Fase:"
+	lvl_title.text = "Escolher Fase (1 a 10):"
 	lvl_title.add_theme_font_size_override("font_size", 11)
 	lvl_title.add_theme_color_override("font_color", Color(0.65, 0.75, 0.85))
 	lvl_box.add_child(lvl_title)
 
-	var btn_row := HBoxContainer.new()
-	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn_row.add_theme_constant_override("separation", 4)
+	var row1 := HBoxContainer.new()
+	row1.alignment = BoxContainer.ALIGNMENT_CENTER
+	row1.add_theme_constant_override("separation", 3)
 	for i in range(5):
 		var btn := Button.new()
 		btn.text = str(i + 1)
-		btn.custom_minimum_size = Vector2(32, 28)
+		btn.custom_minimum_size = Vector2(28, 24)
 		btn.focus_mode = Control.FOCUS_NONE
 		var lvl_idx := i
 		btn.pressed.connect(func():
@@ -171,8 +176,26 @@ func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 			close()
 			grade_and_level_selected.emit(grade, lvl_idx)
 		)
-		btn_row.add_child(btn)
-	lvl_box.add_child(btn_row)
+		row1.add_child(btn)
+	lvl_box.add_child(row1)
+
+	var row2 := HBoxContainer.new()
+	row2.alignment = BoxContainer.ALIGNMENT_CENTER
+	row2.add_theme_constant_override("separation", 3)
+	for i in range(5, 10):
+		var btn := Button.new()
+		btn.text = str(i + 1)
+		btn.custom_minimum_size = Vector2(28, 24)
+		btn.focus_mode = Control.FOCUS_NONE
+		var lvl_idx := i
+		btn.pressed.connect(func():
+			SoundManager.play("click")
+			close()
+			grade_and_level_selected.emit(grade, lvl_idx)
+		)
+		row2.add_child(btn)
+	lvl_box.add_child(row2)
+
 	vbox.add_child(lvl_box)
 
 	# Primary Play Battery Button
@@ -180,7 +203,7 @@ func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 	start_btn.text = "Jogar Bateria"
 	start_btn.icon = preload("res://assets/icons/arrow_right.svg")
 	start_btn.expand_icon = true
-	start_btn.custom_minimum_size = Vector2(0, 36)
+	start_btn.custom_minimum_size = Vector2(0, 34)
 	start_btn.focus_mode = Control.FOCUS_NONE
 	var start_style := StyleBoxFlat.new()
 	start_style.bg_color = accent.darkened(0.2)
@@ -197,6 +220,136 @@ func _create_grade_card(grade: int, info: Dictionary) -> PanelContainer:
 
 	return card
 
+func _create_classic_card() -> PanelContainer:
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(215, 430)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+	var accent := Color(1.0, 0.8, 0.2) # Ouro
+
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.14, 0.12, 0.06, 0.95)
+	style.border_width_left = 3
+	style.border_width_top = 4
+	style.border_width_right = 3
+	style.border_width_bottom = 3
+	style.border_color = accent
+	style.set_corner_radius_all(8)
+	style.shadow_size = 8
+	style.shadow_color = Color(0.5, 0.4, 0.1, 0.4)
+	card.add_theme_stylebox_override("panel", style)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 12)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	card.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	margin.add_child(vbox)
+
+	# Tag Badge
+	var badge_box := PanelContainer.new()
+	var b_style := StyleBoxFlat.new()
+	b_style.bg_color = accent
+	b_style.set_corner_radius_all(4)
+	badge_box.add_theme_stylebox_override("panel", b_style)
+	var b_label := Label.new()
+	b_label.text = "🏆 MODO PRÊMIO"
+	b_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b_label.add_theme_font_size_override("font_size", 14)
+	b_label.add_theme_color_override("font_color", Color.BLACK)
+	badge_box.add_child(b_label)
+	vbox.add_child(badge_box)
+
+	# Subtitle
+	var sub_label := Label.new()
+	sub_label.text = "Sokoban Clássico"
+	sub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub_label.add_theme_font_size_override("font_size", 15)
+	sub_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.6))
+	vbox.add_child(sub_label)
+
+	# Description
+	var desc_label := Label.new()
+	desc_label.text = "Desafio sem matemática! 10 fases dinâmicas que mudam de formato a cada partida com dificuldade progressiva."
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.add_theme_font_size_override("font_size", 11)
+	desc_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
+	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(desc_label)
+
+	# Level Grid (1 a 10)
+	var lvl_box := VBoxContainer.new()
+	lvl_box.add_theme_constant_override("separation", 3)
+
+	var lvl_title := Label.new()
+	lvl_title.text = "Fases Clássicas (1 a 10):"
+	lvl_title.add_theme_font_size_override("font_size", 11)
+	lvl_title.add_theme_color_override("font_color", Color(0.9, 0.8, 0.5))
+	lvl_box.add_child(lvl_title)
+
+	var row1 := HBoxContainer.new()
+	row1.alignment = BoxContainer.ALIGNMENT_CENTER
+	row1.add_theme_constant_override("separation", 3)
+	for i in range(5):
+		var btn := Button.new()
+		btn.text = str(i + 1)
+		btn.custom_minimum_size = Vector2(28, 24)
+		btn.focus_mode = Control.FOCUS_NONE
+		var lvl_idx := i
+		btn.pressed.connect(func():
+			SoundManager.play("click")
+			close()
+			grade_and_level_selected.emit(0, lvl_idx)
+		)
+		row1.add_child(btn)
+	lvl_box.add_child(row1)
+
+	var row2 := HBoxContainer.new()
+	row2.alignment = BoxContainer.ALIGNMENT_CENTER
+	row2.add_theme_constant_override("separation", 3)
+	for i in range(5, 10):
+		var btn := Button.new()
+		btn.text = str(i + 1)
+		btn.custom_minimum_size = Vector2(28, 24)
+		btn.focus_mode = Control.FOCUS_NONE
+		var lvl_idx := i
+		btn.pressed.connect(func():
+			SoundManager.play("click")
+			close()
+			grade_and_level_selected.emit(0, lvl_idx)
+		)
+		row2.add_child(btn)
+	lvl_box.add_child(row2)
+
+	vbox.add_child(lvl_box)
+
+	# Play Prize Button
+	var start_btn := Button.new()
+	start_btn.text = "Jogar Clássico"
+	start_btn.icon = preload("res://assets/icons/trophy.svg")
+	start_btn.expand_icon = true
+	start_btn.custom_minimum_size = Vector2(0, 34)
+	start_btn.focus_mode = Control.FOCUS_NONE
+	var start_style := StyleBoxFlat.new()
+	start_style.bg_color = accent.darkened(0.2)
+	start_style.border_width_top = 1
+	start_style.border_color = accent.lightened(0.3)
+	start_style.set_corner_radius_all(6)
+	start_btn.add_theme_stylebox_override("normal", start_style)
+	start_btn.add_theme_color_override("font_color", Color.BLACK)
+	start_btn.pressed.connect(func():
+		SoundManager.play("win")
+		close()
+		grade_and_level_selected.emit(0, 0)
+	)
+	vbox.add_child(start_btn)
+
+	return card
+
 func _highlight_selected_grade() -> void:
-	# Podem ser adicionados efeitos visuais quando reaberto
 	pass

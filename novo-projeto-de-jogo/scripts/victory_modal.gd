@@ -3,6 +3,8 @@ extends CanvasLayer
 
 signal next_level_selected
 signal retry_level_selected
+signal grade_modal_selected
+signal claim_prize_selected
 
 @onready var title_label: Label = $CenterContainer/PanelContainer/Margin/VBox/Title
 @onready var level_name_label: Label = $CenterContainer/PanelContainer/Margin/VBox/LevelName
@@ -11,6 +13,8 @@ signal retry_level_selected
 @onready var stars_label: Label = $CenterContainer/PanelContainer/Margin/VBox/Stars
 @onready var next_btn: Button = $CenterContainer/PanelContainer/Margin/VBox/HBox/NextBtn
 @onready var retry_btn: Button = $CenterContainer/PanelContainer/Margin/VBox/HBox/RetryBtn
+@onready var grade_select_btn: Button = $CenterContainer/PanelContainer/Margin/VBox/HBox/GradeSelectBtn
+@onready var claim_prize_btn: Button = $CenterContainer/PanelContainer/Margin/VBox/HBox/ClaimPrizeBtn
 
 func _ready() -> void:
 	visible = false
@@ -25,6 +29,18 @@ func _ready() -> void:
 			SoundManager.play("click")
 			hide()
 			retry_level_selected.emit()
+		)
+	if grade_select_btn:
+		grade_select_btn.pressed.connect(func():
+			SoundManager.play("click")
+			hide()
+			grade_modal_selected.emit()
+		)
+	if claim_prize_btn:
+		claim_prize_btn.pressed.connect(func():
+			SoundManager.play("win")
+			hide()
+			claim_prize_selected.emit()
 		)
 
 func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool = false, grade: int = 1) -> void:
@@ -45,25 +61,49 @@ func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool
 		var rating_str := "Excelente [ 3 / 3 ]" if stars == 3 else "Muito Bom [ 2 / 3 ]" if stars == 2 else "Bom [ 1 / 3 ]"
 		stars_label.text = "Eficiência Algorítmica: %s" % rating_str
 
+	var is_classic: bool = level_dict.get("is_classic", false)
+
 	if message_label:
-		message_label.text = "Conceito consolidado: " + level_dict.get("bncc_code", "")
+		if is_final_grade_level:
+			if is_classic:
+				message_label.text = "🏆 Mestre do Sokoban! Você completou as 10 fases dinâmicas do modo prêmio!"
+			else:
+				message_label.text = "🎉 Parabéns! Você dominou todas as 10 fases pedagógicas deste ano letivo!"
+		else:
+			message_label.text = "Conceito consolidado: " + level_dict.get("bncc_code", "")
 
 	if title_label:
 		if is_final_grade_level:
-			if grade >= 5:
-				title_label.text = "Ensino Fundamental I Concluído!"
+			if is_classic:
+				title_label.text = "🏆 Grande Prêmio Concluído!"
+			elif grade >= 5:
+				title_label.text = "🎓 Ensino Fundamental I Concluído!"
 			else:
-				title_label.text = "%dº Ano Concluído com Sucesso!" % grade
+				title_label.text = "🎉 Parabéns! %dº Ano Concluído!" % grade
 		else:
 			title_label.text = "Desafio Concluído!"
 
-	if next_btn:
-		if is_final_grade_level:
-			if grade >= 5:
-				next_btn.text = " Concluir e Escolher Ano"
-			else:
-				next_btn.text = " Avançar para o %dº Ano" % (grade + 1)
-		else:
+	# Configura botões dependendo de ser final de ano letivo ou fase normal
+	if is_final_grade_level:
+		if next_btn:
+			next_btn.visible = false
+		if retry_btn:
+			retry_btn.visible = true
+			retry_btn.text = " Jogar Novamente"
+		if grade_select_btn:
+			grade_select_btn.visible = true
+		if claim_prize_btn:
+			claim_prize_btn.visible = not is_classic
+	else:
+		if next_btn:
+			next_btn.visible = true
 			next_btn.text = " Próxima Fase"
+		if retry_btn:
+			retry_btn.visible = true
+			retry_btn.text = " Repetir Fase"
+		if grade_select_btn:
+			grade_select_btn.visible = false
+		if claim_prize_btn:
+			claim_prize_btn.visible = false
 
 	show()

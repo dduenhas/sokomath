@@ -21,10 +21,13 @@ const TEXTURES := {
 	"metal": "res://kenney_sokoban-pack/PNG/Default size/Crates/crate_42.png"
 }
 
-func setup(p_grid_pos: Vector2i, p_val: int, p_theme: String = "wood") -> void:
+var show_badge: bool = true
+
+func setup(p_grid_pos: Vector2i, p_val: int, p_theme: String = "wood", p_show_badge: bool = true) -> void:
 	grid_pos = p_grid_pos
 	value = p_val
 	color_theme = p_theme
+	show_badge = p_show_badge
 	position = GridConstants.grid_to_world(grid_pos) + Vector2(32, 32)
 	update_appearance()
 
@@ -37,7 +40,9 @@ func update_appearance() -> void:
 	if tex and sprite:
 		sprite.texture = tex
 
-	if value_label:
+	if badge:
+		badge.visible = show_badge
+	if value_label and show_badge:
 		value_label.text = str(value)
 
 func move_to(target_grid: Vector2i, duration: float = 0.15) -> Signal:

@@ -23,14 +23,13 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation="sensor"
 
-[input_devices]
-
-pointing/emulate_touch_from_mouse=true
-pointing/emulate_mouse_from_touch=true
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [physics]
 
@@ -38,7 +37,7 @@ enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
 
 [rendering]
 
-environment/defaults/default_clear_color=Color(0.06, 0.08, 0.12, 1)
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.06, 0.08, 0.12, 1)

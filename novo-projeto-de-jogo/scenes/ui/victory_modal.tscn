@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://scripts/victory_modal.gd" id="1_victory_script"]
 [ext_resource type="Texture2D" path="res://assets/icons/restart.svg" id="2_icon_restart"]
 [ext_resource type="Texture2D" path="res://assets/icons/arrow_right.svg" id="3_icon_arrow_right"]
+[ext_resource type="Texture2D" path="res://assets/icons/trophy.svg" id="4_icon_trophy"]
+[ext_resource type="Texture2D" path="res://assets/icons/grade.svg" id="5_icon_grade"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_overlay"]
 bg_color = Color(0, 0, 0, 0.6)
@@ -34,6 +36,20 @@ font_color = Color(1, 0.8, 0.2, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_vmsg"]
 font_size = 14
 font_color = Color(0.7, 0.85, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_trophy_btn"]
+bg_color = Color(0.9, 0.72, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.95, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.4)
 
 [node name="VictoryModal" type="CanvasLayer"]
 layer = 10
@@ -126,3 +142,25 @@ text = " Próxima Fase"
 icon = ExtResource("3_icon_arrow_right")
 icon_alignment = 2
 expand_icon = true
+
+[node name="GradeSelectBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBox"]
+visible = false
+custom_minimum_size = Vector2(170, 42)
+layout_mode = 2
+focus_mode = 0
+text = " Escolher Ano"
+icon = ExtResource("5_icon_grade")
+expand_icon = true
+
+[node name="ClaimPrizeBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/HBox"]
+visible = false
+custom_minimum_size = Vector2(210, 44)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_trophy_btn")
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+text = " Resgate seu Prêmio"
+icon = ExtResource("4_icon_trophy")
+expand_icon = true
+
