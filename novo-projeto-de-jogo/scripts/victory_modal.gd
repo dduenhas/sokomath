@@ -43,6 +43,22 @@ func _ready() -> void:
 			claim_prize_selected.emit()
 		)
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_SPACE or event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER:
+			if next_btn and next_btn.visible and not next_btn.disabled:
+				get_viewport().set_input_as_handled()
+				SoundManager.play("click")
+				hide()
+				next_level_selected.emit()
+			elif claim_prize_btn and claim_prize_btn.visible and not claim_prize_btn.disabled:
+				get_viewport().set_input_as_handled()
+				SoundManager.play("win")
+				hide()
+				claim_prize_selected.emit()
+
 func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool = false, grade: int = 1) -> void:
 	var optimal: int = level_dict.get("optimal_steps", 20)
 	var stars := 3
@@ -97,7 +113,7 @@ func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool
 	else:
 		if next_btn:
 			next_btn.visible = true
-			next_btn.text = " Próxima Fase"
+			next_btn.text = " Próxima Fase (Espaço)"
 		if retry_btn:
 			retry_btn.visible = true
 			retry_btn.text = " Repetir Fase"
@@ -107,3 +123,5 @@ func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool
 			claim_prize_btn.visible = false
 
 	show()
+	if next_btn and next_btn.visible:
+		next_btn.grab_focus()

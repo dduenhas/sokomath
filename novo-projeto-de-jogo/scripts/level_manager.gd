@@ -786,14 +786,6 @@ func _evaluate_game_state() -> void:
 	elif not satisfied and is_door_open:
 		_close_door()
 
-	# Conclusão Automática para Sokoban Clássico:
-	# No Sokoban tradicional, colocar todas as caixas nos alvos já é a vitória do puzzle!
-	var is_classic: bool = current_level.get("is_classic", current_grade == 0)
-	if is_classic and satisfied and not is_completed:
-		await get_tree().create_timer(0.35).timeout
-		if is_inside_tree() and not is_completed and is_door_open:
-			_trigger_victory()
-
 func _open_door() -> void:
 	is_door_open = true
 	SoundManager.play("plate", 0.05)
