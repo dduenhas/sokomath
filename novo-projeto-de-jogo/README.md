@@ -36,21 +36,37 @@ Em consonância com o Complemento à Base Nacional Comum Curricular (Resolução
 
 ## 📚 Matriz Curricular por Ano Escolar (BNCC Matemática)
 
-O jogo organiza seus desafios progressivamente do 1º ao 5º ano do Ensino Fundamental I, contando com **10 fases progressivas por ano letivo** (**50 fases pedagógicas no total**):
+O jogo organiza seus desafios pedagógicos do 1º ao 5º ano do Ensino Fundamental I com **10 fases progressivas por ano letivo** (**50 fases curriculares de Matemática no total**), inspiradas nas habilidades da BNCC e Currículo Paulista:
 
 | Ano | Fases | Faixa Etária | Temática Central | Habilidades BNCC Principais | Mecânica no Jogo |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1º Ano** | 10 Níveis | 6 a 7 anos | Fundamentos Lógicos e Sequências | **EF01MA01, EF01MA02, EF01MA09, EF01MA10** | Contagem simples, correspondência 1 a 1 e ordenação crescente (1, 2, 3). |
-| **2º Ano** | 10 Níveis | 7 a 8 anos | Paridade e Comparações | **EF02MA01, EF02MA05, EF02MA06, EF02MA09** | Filtros de números pares e ímpares, desigualdades relacionais (> e <). |
-| **3º Ano** | 10 Níveis | 8 a 9 anos | Operações Aritméticas e Saltos | **EF03MA05, EF03MA06, EF03MA10** | Adição e subtração como operações inversas, cálculo mental e saltos aritméticos. |
-| **4º Ano** | 10 Níveis | 9 a 10 anos | Multiplicação e Portas Lógicas | **EF04MA04, EF04MA05, EF04MA11, EF04MA12** | Fatores, múltiplos comuns e circuitos lógicos (placas com operador booleano AND). |
-| **5º Ano** | 10 Níveis | 10 a 11 anos | Expressões Numéricas e Precedência | **EF05MA07, EF05MA08, EF05MA10, EF05MA11** | Expressões compostas, ordem de operações aritméticas e equações combinadas. |
+| **1º Ano** | 10 Fases | 6 a 7 anos | Contagem, Comparação e Sequências | **EF01MA01, EF01MA02, EF01MA03, EF01MA04, EF01MA06, EF01MA08, EF01MA09, EF01MA10** | Contagem concreta, correspondência um a um, mais/menos, ordem entre, sequências (+1) e juntar/retirar. |
+| **2º Ano** | 10 Fases | 7 a 8 anos | Comparação, Composição e Padrões | **EF02MA01, EF02MA05, EF02MA06, EF02MA08, EF02MA09** | Ordenação de dezenas, maior/menor (> 15), reta numérica, composição 20+5, cálculo mental, paridade e saltos (+5). |
+| **3º Ano** | 10 Fases | 8 a 9 anos | Operações e Regularidades | **EF03MA05, EF03MA06, EF03MA07, EF03MA08, EF03MA09, EF03MA10** | Adição por decomposição, subtração prática (estoque), multiplicação (parcelas e retângulos), divisão e saltos (+4). |
+| **4º Ano** | 10 Fases | 9 a 10 anos | Operações, Frações e Medidas | **EF04MA03, EF04MA04, EF04MA05, EF04MA06, EF04MA07, EF04MA09, EF04MA20, EF04MA21, EF04MA27** | Operações com centenas, multiplicação no cotidiano, divisão e resto, operação inversa, frações unitárias (1/4), perímetro, área e gráficos. |
+| **5º Ano** | 10 Fases | 10 a 11 anos | Frações, Decimais e Problemas | **EF05MA01, EF05MA02, EF05MA03, EF05MA04, EF05MA06, EF05MA07, EF05MA08, EF05MA12, EF05MA15, EF05MA20** | Valor posicional, frações de quantidade, frações equivalentes, decimais e troco monetário, porcentagens (50% e 25%), proporcionalidade e áreas. |
+
+---
+
+## 💡 Modalidade Complementar: Desafios Extras — Lógica Computacional
+
+Acessível por aba dedicada na tela de seleção, esta modalidade reúne **10 desafios de Pensamento Computacional**:
+* **Fase 1:** Algoritmos e Sequência de Passos (planejamento sem bloqueios).
+* **Fase 2:** Padrões e Sequências Recursivas (+3).
+* **Fase 3:** Labirinto e Orientação Espacial (manobra em corredores).
+* **Fase 4:** Tomada de Decisão Condicional (Se... Então... / Par e Ímpar).
+* **Fase 5:** Circuito Lógico E (Porta AND com representação visual e linguagem infantil).
+* **Fase 6:** Circuito Lógico OU (Porta OR alternativa).
+* **Fase 7:** Classificação e Filtragem Multifatorial (par e maior que 10).
+* **Fase 8:** Depuração Simples de Instruções (Debugging).
+* **Fase 9:** Circuitos Lógicos Combinados.
+* **Fase 10:** O Grande Desafio Algorítmico Mestre.
 
 ---
 
 ## 🏆 Modo Bônus: Sokoban Clássico (10 Fases Dinâmicas)
 
-Ao concluir as 10 fases de qualquer ano letivo (ou diretamente pelo menu de seleção), o jogador desbloqueia o **Modo Prêmio: Sokoban Clássico**:
+Ao concluir as fases ou diretamente pela aba de Desafios Extras, o jogador pode desfrutar do **Sokoban Clássico**:
 * **Lógica Tradicional de Desobstrução:** Pura mecânica de puzzle espacial e pensamento algorítmico, onde caixas bloqueiam passagens estratégicas. O objetivo é desviar as caixas para nichos de armazenagem laterais a fim de liberar o caminho até a saída.
 * **10 Níveis Exclusivos de Desafio:** Variando de 1 a 4 caixas e progressão de 6 a 15 empurrões mínimos (*O Primeiro Corredor*, *A Encruzilhada em T*, *O Gargalo Central*, *O Circuito do Pilar*, *O Desvio em S*, *Câmaras Conectadas*, *Corredor de Armazenagem*, *O Pátio Oposto*, *A Grande Ala* e *O Enigma do Mestre Sokoban*).
 * **Geração e Variação Dinâmica:** A cada partida, o gerador aplica espelhamentos verticais/horizontais e temas visuais variados, criando tabuleiros com visual renovado a cada tentativa sem perder a solubilidade matemática.

@@ -83,6 +83,8 @@ func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool
 		if is_final_grade_level:
 			if is_classic:
 				message_label.text = "🏆 Mestre do Sokoban! Você completou as 10 fases dinâmicas do modo prêmio!"
+			elif grade == 6:
+				message_label.text = "💡 Mestre da Lógica! Você completou os 10 Desafios Extras de Pensamento Computacional!"
 			else:
 				message_label.text = "🎉 Parabéns! Você dominou todas as 10 fases pedagógicas deste ano letivo!"
 		else:
@@ -92,6 +94,8 @@ func show_victory(level_dict: Dictionary, steps: int, is_final_grade_level: bool
 		if is_final_grade_level:
 			if is_classic:
 				title_label.text = "🏆 Grande Prêmio Concluído!"
+			elif grade == 6:
+				title_label.text = "💡 Desafios Extras Concluídos!"
 			elif grade >= 5:
 				title_label.text = "🎓 Ensino Fundamental I Concluído!"
 			else:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/grade_select_modal.gd" id="1_grade_select_script"]
 [ext_resource type="Texture2D" path="res://assets/icons/music.svg" id="2_icon_music"]
@@ -23,7 +23,7 @@ shadow_size = 14
 shadow_color = Color(0, 0, 0, 0.6)
 
 [sub_resource type="LabelSettings" id="LabelSettings_modal_title"]
-font_size = 22
+font_size = 20
 font_color = Color(1, 0.88, 0.35, 1)
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
@@ -41,11 +41,64 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
-bg_color = Color(0.4, 0.15, 0.15, 0.9)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+bg_color = Color(0.45, 0.15, 0.15, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.3, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_active"]
+bg_color = Color(0.18, 0.3, 0.46, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.8, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_inactive"]
+bg_color = Color(0.08, 0.12, 0.18, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.48, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scope_badge"]
+bg_color = Color(0.07, 0.13, 0.2, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.45, 0.65, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.88, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="GradeSelectModal" type="CanvasLayer"]
 layer = 15
@@ -67,20 +120,20 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(920, 560)
+custom_minimum_size = Vector2(940, 570)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_main_panel")
 
 [node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 10
 
 [node name="Header" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2
@@ -91,14 +144,14 @@ size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header/TitleBox"]
 layout_mode = 2
-text = "Selecione o Ano Escolar (Ensino Fundamental I)"
+text = "SokoMath — Seleção de Modalidade & Ano Escolar"
 label_settings = SubResource("LabelSettings_modal_title")
 
 [node name="Subtitle" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/Header/TitleBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.85, 0.95, 1)
-theme_override_font_sizes/font_size = 13
-text = "Escolha sua série escolar para carregar a bateria de exercícios de lógica e pensamento computacional calibrada para sua idade:"
+theme_override_font_sizes/font_size = 12
+text = "Escolha sua série escolar ou explore os desafios complementares de pensamento computacional:"
 
 [node name="AudioControls" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
 layout_mode = 2
@@ -106,32 +159,76 @@ size_flags_vertical = 4
 theme_override_constants/separation = 8
 
 [node name="MusicBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header/AudioControls"]
-custom_minimum_size = Vector2(108, 32)
+custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
-focus_mode = 0
+focus_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_audio_btn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
 text = " Música"
 icon = ExtResource("2_icon_music")
 expand_icon = true
 
 [node name="SfxBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header/AudioControls"]
-custom_minimum_size = Vector2(108, 32)
+custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
-focus_mode = 0
+focus_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_audio_btn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
 text = " Efeitos"
 icon = ExtResource("3_icon_sound")
 expand_icon = true
 
 [node name="CloseBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/Header"]
-custom_minimum_size = Vector2(90, 32)
+custom_minimum_size = Vector2(86, 30)
 layout_mode = 2
 size_flags_vertical = 4
-focus_mode = 0
+focus_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
 text = " Fechar"
 icon = ExtResource("4_icon_close")
 expand_icon = true
+
+[node name="ScopeBanner" type="PanelContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_scope_badge")
+
+[node name="ScopeMargin" type="MarginContainer" parent="CenterContainer/PanelContainer/Margin/VBox/ScopeBanner"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
+
+[node name="ScopeLabel" type="Label" parent="CenterContainer/PanelContainer/Margin/VBox/ScopeBanner/ScopeMargin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.88, 0.95, 1)
+theme_override_font_sizes/font_size = 11
+text = "Matemática por ano escolar + desafios opcionais de lógica computacional | Trilha inspirada em habilidades curriculares (BNCC / Currículo Paulista)"
+horizontal_alignment = 1
+
+[node name="ModeSwitcher" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="MathTabBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/ModeSwitcher"]
+custom_minimum_size = Vector2(340, 34)
+layout_mode = 2
+focus_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
+theme_override_font_sizes/font_size = 13
+text = "📐 Matemática por Ano Escolar (1º ao 5º Ano)"
+
+[node name="ExtraTabBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/VBox/ModeSwitcher"]
+custom_minimum_size = Vector2(340, 34)
+layout_mode = 2
+focus_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_inactive")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
+theme_override_font_sizes/font_size = 13
+text = "💡 Desafios Extras — Lógica Computacional"
 
 [node name="ScrollCards" type="ScrollContainer" parent="CenterContainer/PanelContainer/Margin/VBox"]
 layout_mode = 2

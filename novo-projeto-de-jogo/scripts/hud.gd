@@ -295,14 +295,19 @@ func _update_audio_buttons() -> void:
 func update_level_info(level_dict: Dictionary) -> void:
 	var g: int = level_dict.get("grade", 1)
 	var is_classic: bool = level_dict.get("is_classic", false) or (g == 0)
+	var is_extra: bool = (g == 6)
 	if grade_button:
 		if is_classic:
-			grade_button.text = "🏆 Prêmio"
+			grade_button.text = "🏆 Clássico"
+		elif is_extra:
+			grade_button.text = "💡 Lógica Extra"
 		else:
 			grade_button.text = "%dº Ano" % g
 	if title_label:
 		if is_classic:
 			title_label.text = "Sokoban Clássico | " + level_dict.get("title", "Fase")
+		elif is_extra:
+			title_label.text = "Lógica Computacional | " + level_dict.get("title", "Fase")
 		else:
 			title_label.text = "SokoMath | " + level_dict.get("title", "Fase")
 	if objective_label:
@@ -311,13 +316,13 @@ func update_level_info(level_dict: Dictionary) -> void:
 		else:
 			objective_label.text = "Desafio: " + level_dict.get("rule_description", "")
 	if bncc_code_label:
-		bncc_code_label.text = level_dict.get("bncc_code", "Sokoban Clássico" if is_classic else "BNCC Computação")
+		bncc_code_label.text = level_dict.get("bncc_code", "Sokoban Clássico" if is_classic else "Pensamento Computacional")
 	if bncc_desc_label:
 		bncc_desc_label.text = level_dict.get("bncc_desc", "")
 	if toggle_bncc_button:
 		toggle_bncc_button.visible = not is_classic
 	if owl_button:
-		owl_button.visible = not is_classic
+		owl_button.visible = true
 
 func update_steps(steps: int, optimal: int) -> void:
 	if steps_label:

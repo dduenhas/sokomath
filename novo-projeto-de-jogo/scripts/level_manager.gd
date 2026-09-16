@@ -206,7 +206,7 @@ func load_level(idx: int) -> void:
 	load_grade_level(current_grade, idx)
 
 func load_grade_level(grade: int, idx: int) -> void:
-	current_grade = clampi(grade, 0, 5)
+	current_grade = clampi(grade, 0, 6)
 	var total_levels := 10
 	if idx < 0 or idx >= total_levels:
 		idx = 0
@@ -581,7 +581,13 @@ func _evaluate_game_state() -> void:
 					active_count += 1
 				else:
 					all_ok = false
-			status_text = "Sensores Ativados: %d / %d" % [active_count, plates.size()]
+			var custom_msg: String = current_level.get("status_format", "")
+			if custom_msg != "" and all_ok:
+				status_text = custom_msg
+			elif custom_msg != "":
+				status_text = "Sensores: %d / %d corretos" % [active_count, plates.size()]
+			else:
+				status_text = "Sensores Ativados: %d / %d" % [active_count, plates.size()]
 			satisfied = all_ok
 
 		"ORDER_ASCENDING":
@@ -663,6 +669,22 @@ func _evaluate_game_state() -> void:
 				"ATIVA" if and_result == 1 else "BLOQUEADA"
 			]
 			satisfied = (and_result == 1)
+
+		"LOGIC_OR":
+			var in1_box := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
+			var in2_box := get_box_at(plates[1].grid_pos) if plates.size() > 1 else null
+
+			var v1 := in1_box.value if in1_box else 0
+			var v2 := in2_box.value if in2_box else 0
+			var or_result := 1 if (v1 == 1 or v2 == 1) else 0
+
+			status_text = "Circuito OR: In1=%s, In2=%s -> Saída: %d (%s)" % [
+				str(v1) if in1_box else "?",
+				str(v2) if in2_box else "?",
+				or_result,
+				"ATIVA" if or_result == 1 else "BLOQUEADA"
+			]
+			satisfied = (or_result == 1)
 
 		"EQUATION_2A_PLUS_B":
 			var bA := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
