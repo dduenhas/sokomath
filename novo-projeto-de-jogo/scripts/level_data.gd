@@ -168,7 +168,7 @@ static func _level_g1_1() -> Dictionary:
 		"title": "1º Ano - Fase 1: Contagem de Objetos",
 		"bncc_code": "EF01MA01 / EF01MA04 - Contagem e Leitura de Números Naturais",
 		"bncc_desc": "Desenvolve a contagem de elementos em coleções pequenas e o registro numérico correspondente.",
-		"rule_description": "Conte quantos pontos luminosos estão marcados no chão e encaixe a caixa com a quantidade correta no sensor.",
+		"rule_description": "Conte quantas caixas estão na sala (1, 2 e 3) e encaixe no sensor a caixa com o número correspondente a esse total.",
 		"rule_type": "TARGET_PLATES",
 		"target_value": 3,
 		"optimal_steps": 10,
@@ -188,9 +188,9 @@ static func _level_g1_1() -> Dictionary:
 			{"pos": Vector2i(4, 2), "val": 2, "theme": "red", "show_badge": true}
 		],
 		"plates": [
-			{"pos": Vector2i(6, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 3, "label": "Contagem", "id": "p1"}
+			{"pos": Vector2i(6, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 3, "label": "Total = 3", "id": "p1"}
 		],
-		"status_format": "3 pontos contados com sucesso! Caminho liberado!"
+		"status_format": "3 caixas contadas com sucesso! Caminho liberado!"
 	}
 
 static func _level_g1_2() -> Dictionary:
