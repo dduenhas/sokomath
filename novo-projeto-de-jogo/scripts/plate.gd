@@ -60,25 +60,13 @@ func update_appearance() -> void:
 	if not is_inside_tree():
 		await ready
 
-	if tag_label:
-		if label_text != "":
-			tag_label.text = label_text
+	if tag_badge:
+		if label_text == "":
+			tag_badge.visible = false
 		else:
-			match condition_type:
-				ConditionType.TARGET_VALUE:
-					tag_label.text = str(required_value)
-				ConditionType.EVEN:
-					tag_label.text = "PAR"
-				ConditionType.ODD:
-					tag_label.text = "ÍMPAR"
-				ConditionType.GREATER_THAN:
-					tag_label.text = ">" + str(required_value)
-				ConditionType.LESS_THAN:
-					tag_label.text = "<" + str(required_value)
-				ConditionType.LOGIC_TRUE:
-					tag_label.text = "1"
-				_:
-					tag_label.text = "*"
+			tag_badge.visible = true
+			if tag_label:
+				tag_label.text = label_text
 
 	_update_visual_state(false)
 

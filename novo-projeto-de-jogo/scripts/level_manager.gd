@@ -585,9 +585,9 @@ func _evaluate_game_state() -> void:
 			if custom_msg != "" and all_ok:
 				status_text = custom_msg
 			elif custom_msg != "":
-				status_text = "Sensores: %d / %d corretos" % [active_count, plates.size()]
+				status_text = "Vagas: %d / %d preenchidas" % [active_count, plates.size()]
 			else:
-				status_text = "Sensores Ativados: %d / %d" % [active_count, plates.size()]
+				status_text = "Vagas Preenchidas: %d / %d" % [active_count, plates.size()]
 			satisfied = all_ok
 
 		"ORDER_ASCENDING":
@@ -608,14 +608,14 @@ func _evaluate_game_state() -> void:
 			var p_ok := plates.size() > 0 and plates[0].is_satisfied
 			var b := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var b_str := str(b.value) if b else "?"
-			status_text = "Caixa no Sensor: [%s] (%s)" % [b_str, "Menor Valor Correto!" if p_ok else "Aguardando o menor número"]
+			status_text = "Caixa no Local: [%s] (%s)" % [b_str, "Menor Valor Correto!" if p_ok else "Aguardando o menor número"]
 			satisfied = p_ok
 
 		"CONDITION_SINGLE":
 			var p_ok := plates.size() > 0 and plates[0].is_satisfied
 			var b := get_box_at(plates[0].grid_pos) if plates.size() > 0 else null
 			var b_str := str(b.value) if b else "?"
-			status_text = "Condição do Sensor: [%s] (%s)" % [b_str, "Ativada" if p_ok else "Pendente"]
+			status_text = "Condição da Vaga: [%s] (%s)" % [b_str, "Ativada" if p_ok else "Pendente"]
 			satisfied = p_ok
 
 		"CONDITIONAL_EVEN_ODD":

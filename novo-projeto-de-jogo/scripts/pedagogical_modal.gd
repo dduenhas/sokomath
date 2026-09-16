@@ -58,7 +58,7 @@ Esta modalidade oferece um ambiente investigativo de Pensamento Computacional pa
 • [b]Fase 5 (Porta Lógica AND):[/b] Circuitos com duas chaves simultaneamente ativas (1 E 1 = Porta Aberta).
 • [b]Fase 6 (Porta Lógica OR):[/b] Circuitos com condição alternativa (basta 1 chave ativa).
 • [b]Fase 7 (Filtragem):[/b] Classificação simultânea de múltiplos atributos (par e maior que 10).
-• [b]Fase 8 (Debugging):[/b] Identificação e substituição de instrução com erro (depuração de sensor).
+• [b]Fase 8 (Debugging):[/b] Identificação e substituição de instrução com erro (depuração de vaga e rota).
 • [b]Fase 9 (Circuitos Combinados):[/b] Integração de chaves lógicas coordenadas.
 • [b]Fase 10 (Desafio Mestre):[/b] Síntese completa de algoritmos e otimização de passos.
 
