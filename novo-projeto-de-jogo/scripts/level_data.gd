@@ -330,7 +330,7 @@ static func _level_g1_6() -> Dictionary:
 		"bncc_desc": "Estimula o reconhecimento de regularidades em sequências repetitivas com atributos de cores e materiais.",
 		"rule_description": "Observe a sequência: Azul, Madeira, Azul... Descubra qual caixa mantém a ordem e complete a fila no espaço marcado.",
 		"rule_type": "TARGET_PLATES",
-		"target_value": 1,
+		"target_value": 3,
 		"optimal_steps": 15,
 		"grid_width": 10,
 		"grid_height": 7,
@@ -348,7 +348,7 @@ static func _level_g1_6() -> Dictionary:
 			{"pos": Vector2i(4, 3), "val": 3, "theme": "red", "show_badge": true}
 		],
 		"plates": [
-			{"pos": Vector2i(7, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 1, "label": "Próxima da fila", "id": "p_pat"}
+			{"pos": Vector2i(7, 3), "type": SokoPlate.ConditionType.TARGET_VALUE, "val": 3, "label": "Próxima da fila", "id": "p_pat"}
 		],
 		"status_format": "Padrão completado: Azul, Madeira, Azul, Madeira!"
 	}
@@ -719,7 +719,7 @@ static func _level_g2_8() -> Dictionary:
 		"title": "2º Ano - Fase 8: Pares e Ímpares",
 		"bncc_code": "EF02MA08 - Identificação de Números Pares e Ímpares",
 		"bncc_desc": "Desenvolve o conceito de paridade associando à formação de pares sem sobras.",
-		"rule_description": "Separe as caixas pela paridade: coloque o número PAR na vaga azul e o número ÍMPAR na vaga verde.",
+		"rule_description": "Separe as caixas pela paridade: coloque o número PAR na Vaga PAR e o número ÍMPAR na Vaga ÍMPAR.",
 		"rule_type": "CONDITIONAL_EVEN_ODD",
 		"target_value": 0,
 		"optimal_steps": 18,
@@ -1887,7 +1887,7 @@ static func _level_extra_4() -> Dictionary:
 		"title": "Desafio Extra 4: Condicionais (Se... Então...)",
 		"bncc_code": "Pensamento Computacional - Estruturas Condicionais (IF/ELSE)",
 		"bncc_desc": "Ensina a estrutura de controle condicional básica de decisão computacional (SE / SENÃO).",
-		"rule_description": "Tomada de decisão: SE o valor for PAR, direcione para a vaga azul; SE for ÍMPAR, direcione para a vaga verde.",
+		"rule_description": "Tomada de decisão: SE o valor for PAR, direcione para a vaga PAR; SE for ÍMPAR, direcione para a vaga ÍMPAR.",
 		"rule_type": "CONDITIONAL_EVEN_ODD",
 		"target_value": 0,
 		"optimal_steps": 17,
