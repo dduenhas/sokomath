@@ -1,0 +1,1600 @@
+# -*- coding: utf-8 -*-
+"""
+Script gerador da Documentação Pedagógica e Técnica Revisada do SokoMath em PDF Profissional.
+Autor: Diego Divino Duenhas (diegoduenhas.com.br)
+Edição: Versão de Revisão Crítica • 2026
+Baseado em: SokoMath_documentacao_revisada.txt e TABELA_FASES_SOKOMATH.csv
+"""
+
+import os
+import sys
+import csv
+import subprocess
+import html
+
+WORKSPACE_DIR = r"c:\Users\diego\Projetos\godot-projs\jogo-novo"
+CSV_PATH = os.path.join(WORKSPACE_DIR, "TABELA_FASES_SOKOMATH.csv")
+REV_PATH = os.path.join(WORKSPACE_DIR, "SokoMath_documentacao_revisada.txt")
+HTML_PATH = os.path.join(WORKSPACE_DIR, "sokomath_documentacao.html")
+PDF_PATH = os.path.join(WORKSPACE_DIR, "SOKOMATH_DOCUMENTACAO_PEDAGOGICA_E_TECNICA.pdf")
+EDGE_PATH = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+TEMP_PROFILE = os.path.join(WORKSPACE_DIR, ".edge_doc_temp")
+
+def load_data():
+    # Carrega dados do CSV original
+    csv_rows = []
+    if os.path.exists(CSV_PATH):
+        with open(CSV_PATH, mode='r', encoding='utf-8-sig') as f:
+            reader = csv.DictReader(f, delimiter=';')
+            csv_rows = list(reader)
+
+    # Organiza CSV por Trilha e Fase
+    csv_lookup = {}
+    for r in csv_rows:
+        t = r.get('Ano/Trilha', '').strip()
+        f_num = r.get('Fase', '').strip()
+        csv_lookup[(t, f_num)] = r
+
+    # Carrega dados da Revisão Crítica
+    rev_tracks = {
+        "1º Ano": [],
+        "2º Ano": [],
+        "3º Ano": [],
+        "4º Ano": [],
+        "5º Ano": [],
+        "Desafios Extras": []
+    }
+
+    track_header_map = {
+        "1º ANO": "1º Ano",
+        "2º ANO": "2º Ano",
+        "3º ANO": "3º Ano",
+        "4º ANO": "4º Ano",
+        "5º ANO": "5º Ano",
+        "COMPUTAÇÃO — TRILHA COMPLEMENTAR": "Desafios Extras"
+    }
+
+    current_t = None
+    if os.path.exists(REV_PATH):
+        with open(REV_PATH, mode='r', encoding='utf-8') as f:
+            for line in f:
+                line_str = line.strip()
+                if line_str in track_header_map:
+                    current_t = track_header_map[line_str]
+                elif current_t and '|' in line_str and not line_str.startswith('Fase') and not line_str.startswith('--'):
+                    parts = [p.strip() for p in line_str.split('|')]
+                    if len(parts) >= 5:
+                        fase_num = parts[0]
+                        titulo = parts[1]
+                        ref_curr = parts[2]
+                        obj = parts[3]
+                        operac = parts[4]
+
+                        # Obter dados complementares do CSV
+                        csv_data = csv_lookup.get((current_t, fase_num), {})
+                        enunciado = csv_data.get('Enunciado (Desafio do Aluno)', '')
+                        vagas = csv_data.get('Rótulos das Vagas (Chão)', '')
+                        caixas = csv_data.get('Caixas Disponíveis)', '') or csv_data.get('Caixas Disponíveis', '')
+                        sucesso = csv_data.get('Mensagem de Sucesso', '')
+
+                        rev_tracks[current_t].append({
+                            "fase": fase_num,
+                            "titulo": titulo,
+                            "ref_curr": ref_curr,
+                            "objetivo": obj,
+                            "operacionalizacao": operac,
+                            "enunciado": enunciado,
+                            "vagas": vagas,
+                            "caixas": caixas,
+                            "sucesso": sucesso
+                        })
+
+    return rev_tracks
+
+def generate_html(rev_tracks):
+    track_colors = {
+        "1º Ano": {"primary": "#16a34a", "light": "#dcfce7", "border": "#86efac", "badge": "#15803d"},
+        "2º Ano": {"primary": "#0284c7", "light": "#e0f2fe", "border": "#7dd3fc", "badge": "#0369a1"},
+        "3º Ano": {"primary": "#d97706", "light": "#fef3c7", "border": "#fcd34d", "badge": "#b45309"},
+        "4º Ano": {"primary": "#7c3aed", "light": "#f3e8ff", "border": "#d8b4fe", "badge": "#6d28d9"},
+        "5º Ano": {"primary": "#b45309", "light": "#fef9c3", "border": "#fde047", "badge": "#92400e"},
+        "Desafios Extras": {"primary": "#0891b2", "light": "#cffafe", "border": "#67e8f9", "badge": "#0e7490"}
+    }
+
+    track_subtitles = {
+        "1º Ano": "Contagem, Correspondência Biunívoca, Comparação, Sequências e Composição Aditiva",
+        "2º Ano": "Dezenas, Relações de Ordem, Reta Numérica, Paridade e Complementos de 100",
+        "3º Ano": "Cálculo Mental, Arranjo Retangular, Fatos Básicos, Divisão (Partilha/Medida) e Frações Usuais",
+        "4º Ano": "Operações Inversas, Resto da Divisão, Frações Unitárias, Perímetro, Área em Malha e Gráficos",
+        "5º Ano": "Valor Posicional, Frações Equivalentes, Decimais Monetários, Porcentagem, Proporção e Dados",
+        "Desafios Extras": "Trilha Complementar de Computação: Algoritmos, Padrões, Condicionais, Booleanos e Debug"
+    }
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>SokoMath — Documentação Pedagógica e Técnica Revisada</title>
+<style>
+  @page {{
+    size: A4 portrait;
+    margin: 14mm 12mm 14mm 12mm;
+    @top-left {{
+      content: "SOKOMATH • DOCUMENTAÇÃO PEDAGÓGICA E TÉCNICA REVISADA";
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 6.8pt;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }}
+    @top-right {{
+      content: "Versão de Revisão Crítica • 2026";
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 6.8pt;
+      color: #94a3b8;
+    }}
+    @bottom-left {{
+      content: "Diego Divino Duenhas • diegoduenhas.com.br";
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 6.8pt;
+      color: #64748b;
+    }}
+    @bottom-right {{
+      content: "Página " counter(page);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 6.8pt;
+      font-weight: 600;
+      color: #64748b;
+    }}
+  }}
+
+  @page :first {{
+    margin: 0;
+    @top-left {{ content: ""; }}
+    @top-right {{ content: ""; }}
+    @bottom-left {{ content: ""; }}
+    @bottom-right {{ content: ""; }}
+  }}
+
+  *, *:before, *:after {{
+    box-sizing: border-box;
+  }}
+
+  body {{
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    font-size: 8.3pt;
+    line-height: 1.38;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }}
+
+  .page-break {{
+    page-break-before: always;
+    break-before: page;
+  }}
+
+  .avoid-break {{
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }}
+
+  /* CAPA FULL-BLEED */
+  .cover-container {{
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24mm 18mm 20mm 18mm;
+    background: linear-gradient(145deg, #090d16 0%, #111827 45%, #0f172a 100%);
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }}
+
+  .cover-decor-circle {{
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0) 70%);
+    top: -100px;
+    right: -100px;
+    border-radius: 50%;
+    z-index: 1;
+  }}
+
+  .cover-decor-grid {{
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0) 70%);
+    border-radius: 50%;
+    z-index: 1;
+  }}
+
+  .cover-top {{
+    position: relative;
+    z-index: 2;
+  }}
+
+  .cover-badge-row {{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }}
+
+  .cover-badge {{
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #e2e8f0;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 7.8pt;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }}
+
+  .cover-badge-rev {{
+    background: rgba(56, 189, 248, 0.18);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    color: #38bdf8;
+  }}
+
+  .cover-title {{
+    font-size: 38pt;
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0 0 12px 0;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 60%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }}
+
+  .cover-subtitle {{
+    font-size: 12pt;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #cbd5e1;
+    margin: 0 0 18px 0;
+    max-width: 630px;
+    text-align: left;
+  }}
+
+  .cover-divider {{
+    height: 3px;
+    width: 80px;
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    margin-bottom: 18px;
+    border-radius: 2px;
+  }}
+
+  .cover-center {{
+    position: relative;
+    z-index: 2;
+    margin: 10px 0;
+  }}
+
+  .cover-art-card {{
+    background: rgba(15, 23, 42, 0.70);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 16px 20px;
+    backdrop-filter: blur(10px);
+  }}
+
+  .cover-art-grid {{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }}
+
+  .cover-track-box {{
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }}
+
+  .cover-track-box .name {{
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+  }}
+
+  .cover-track-box .fases {{
+    font-size: 6.8pt;
+    color: #cbd5e1;
+  }}
+
+  .cover-bottom {{
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 14px;
+  }}
+
+  .cover-author-label {{
+    font-size: 7.5pt;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }}
+
+  .cover-author-name {{
+    font-size: 14pt;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+  }}
+
+  .cover-author-link {{
+    font-size: 8.5pt;
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 600;
+  }}
+
+  .cover-meta-right {{
+    text-align: right;
+    font-size: 7.8pt;
+    color: #94a3b8;
+    line-height: 1.4;
+  }}
+
+  /* TÍTULOS E ELEMENTOS EDITORIAIS */
+  h1.section-title {{
+    font-size: 15.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 4px;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }}
+
+  .sec-num {{
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 9.5pt;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 800;
+    display: inline-block;
+  }}
+
+  h2.subsection-title {{
+    font-size: 10pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 10px 0 4px 0;
+    border-left: 3px solid #0284c7;
+    padding-left: 6px;
+    letter-spacing: -0.2px;
+  }}
+
+  p {{
+    margin: 0 0 7px 0;
+    text-align: justify;
+  }}
+
+  p.lead-text {{
+    font-size: 8.8pt;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.42;
+    background: #f8fafc;
+    border-left: 3px solid #64748b;
+    padding: 6px 10px;
+    border-radius: 0 5px 5px 0;
+    margin-bottom: 10px;
+  }}
+
+  .info-grid-2 {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }}
+
+  .info-grid-3 {{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }}
+
+  .card {{
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }}
+
+  .card-header {{
+    font-size: 8.3pt;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }}
+
+  .card-body {{
+    font-size: 7.6pt;
+    color: #475569;
+    line-height: 1.35;
+  }}
+
+  .notice-box {{
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid #16a34a;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 7.8pt;
+    color: #166534;
+    margin-bottom: 8px;
+  }}
+
+  .notice-box-amber {{
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #d97706;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 7.8pt;
+    color: #92400e;
+    margin-bottom: 8px;
+  }}
+
+  .notice-box-blue {{
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-left: 4px solid #0284c7;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 7.8pt;
+    color: #075985;
+    margin-bottom: 8px;
+  }}
+
+  /* DIAGRAMAS SVG */
+  .diagram-wrapper {{
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }}
+
+  .diagram-caption {{
+    font-size: 7.2pt;
+    color: #64748b;
+    text-align: center;
+    margin-top: 5px;
+    font-weight: 500;
+  }}
+
+  /* TABELAS */
+  table.doc-table {{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 6.6pt;
+    line-height: 1.18;
+    margin: 4px 0 0 0;
+  }}
+
+  table.doc-table th {{
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+    text-align: left;
+    padding: 3.5px 5px;
+    border: 1px solid #334155;
+    font-size: 6.8pt;
+  }}
+
+  table.doc-table td {{
+    padding: 2.8px 4.5px;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+  }}
+
+  table.doc-table tbody tr:nth-child(even) {{
+    background: #f8fafc;
+  }}
+
+  .badge-bncc {{
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-family: 'Segoe UI Mono', Consolas, monospace;
+    font-size: 6.1pt;
+    font-weight: 700;
+    white-space: nowrap;
+    margin-bottom: 1px;
+  }}
+
+  .badge-pc {{
+    display: inline-block;
+    background: #cffafe;
+    color: #0e7490;
+    border: 1px solid #a5f3fc;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-family: 'Segoe UI Mono', Consolas, monospace;
+    font-size: 6.1pt;
+    font-weight: 700;
+    white-space: nowrap;
+    margin-bottom: 1px;
+  }}
+
+  .badge-target {{
+    display: inline-block;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 6pt;
+  }}
+
+  .badge-crates {{
+    display: inline-block;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 6pt;
+  }}
+
+  /* TRACK HEADER */
+  .track-header-card {{
+    border-radius: 6px;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }}
+
+  .track-header-title {{
+    font-size: 9.8pt;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.3px;
+  }}
+
+  .track-header-desc {{
+    font-size: 6.9pt;
+    margin: 1px 0 0 0;
+    opacity: 0.95;
+    font-weight: 400;
+  }}
+
+  /* BIO PROFILE */
+  .bio-container {{
+    display: flex;
+    gap: 16px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 8px;
+  }}
+
+  .bio-sidebar {{
+    width: 190px;
+    flex-shrink: 0;
+    border-right: 1px solid #e2e8f0;
+    padding-right: 12px;
+  }}
+
+  .bio-main {{
+    flex-grow: 1;
+  }}
+
+  .bio-avatar-placeholder {{
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #0284c7, #6366f1);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18pt;
+    font-weight: 800;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  }}
+
+  .project-tag {{
+    display: inline-block;
+    background: #e2e8f0;
+    color: #334155;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 6.8pt;
+    font-weight: 600;
+    margin: 1px 2px 1px 0;
+  }}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 1: CAPA EDITORIAL PREMIUM (REVISÃO CRÍTICA 2026)       -->
+<!-- ============================================================ -->
+<div class="cover-container">
+  <div class="cover-decor-circle"></div>
+  <div class="cover-decor-grid"></div>
+
+  <div class="cover-top">
+    <div class="cover-badge-row">
+      <span class="cover-badge">Ensino Fundamental I</span>
+      <span class="cover-badge">BNCC Matemática (2018)</span>
+      <span class="cover-badge">Resolução CNE/CEB nº 1/2022</span>
+      <span class="cover-badge">Godot Engine 4.3 LTS</span>
+      <span class="cover-badge cover-badge-rev">Versão de Revisão Crítica • 2026</span>
+    </div>
+    <h1 class="cover-title">SOKOMATH</h1>
+    <p class="cover-subtitle">Documentação Pedagógica e Técnica Revisada: Resolução de Problemas em Grade, Análise Crítica Curricular e Trilha Complementar de Pensamento Computacional</p>
+    <div class="cover-divider"></div>
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-art-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-weight:700; font-size:9pt; color:#f8fafc; letter-spacing:0.5px;">ESTRUTURA MODULAR DO JOGO • 60 FASES PLANEJADAS (50 MATEMÁTICA + 10 COMPUTAÇÃO)</span>
+        <span style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:2px 8px; border-radius:6px; font-size:6.8pt; font-weight:700;">PROPOSTA DE CORRESPONDÊNCIA CURRICULAR</span>
+      </div>
+      <div class="cover-art-grid">
+        <div class="cover-track-box" style="background: rgba(22, 163, 74, 0.25); border-color: rgba(34, 197, 94, 0.4);">
+          <div class="name" style="color:#4ade80;">1º Ano</div>
+          <div class="fases">10 Fases • Contagem & Par</div>
+        </div>
+        <div class="cover-track-box" style="background: rgba(2, 132, 199, 0.25); border-color: rgba(56, 189, 248, 0.4);">
+          <div class="name" style="color:#38bdf8;">2º Ano</div>
+          <div class="fases">10 Fases • Dezenas & Ordem</div>
+        </div>
+        <div class="cover-track-box" style="background: rgba(217, 119, 6, 0.25); border-color: rgba(245, 158, 11, 0.4);">
+          <div class="name" style="color:#fbbf24;">3º Ano</div>
+          <div class="fases">10 Fases • Operações & Fração</div>
+        </div>
+        <div class="cover-track-box" style="background: rgba(124, 58, 237, 0.25); border-color: rgba(168, 85, 247, 0.4);">
+          <div class="name" style="color:#c084fc;">4º Ano</div>
+          <div class="fases">10 Fases • Geometria & Divisão</div>
+        </div>
+        <div class="cover-track-box" style="background: rgba(180, 83, 9, 0.25); border-color: rgba(234, 179, 8, 0.4);">
+          <div class="name" style="color:#fde047;">5º Ano</div>
+          <div class="fases">10 Fases • Decimais & Razão</div>
+        </div>
+        <div class="cover-track-box" style="background: rgba(8, 145, 178, 0.25); border-color: rgba(6, 182, 212, 0.4);">
+          <div class="name" style="color:#22d3ee;">Extras</div>
+          <div class="fases">10 Fases • Computação</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div>
+      <div class="cover-author-label">Concepção Pedagógica, Design & Desenvolvimento</div>
+      <div class="cover-author-name">Diego Divino Duenhas</div>
+      <a class="cover-author-link" href="https://diegoduenhas.com.br" target="_blank">diegoduenhas.com.br</a>
+      <div style="font-size: 7.3pt; color: #94a3b8; margin-top: 2px;">Designer Gráfico e Desenvolvedor Web • Monitor Específico de Tecnologia (Projeto São João Mais Saber)</div>
+    </div>
+    <div class="cover-meta-right">
+      <strong>Relatório de Revisão Crítica</strong><br>
+      Versão 2.0 • São João da Boa Vista, SP<br>
+      Motor: Godot Engine 4.3 LTS (GDScript)<br>
+      Normas: Resolução CNE/CEB nº 1/2022 & BNCC (2018)
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 2: FINALIDADE, ESCOPO & FICHA TÉCNICA                 -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">00</span> Ficha Técnica, Finalidade & Escopo de Validação</h1>
+
+<div class="notice-box-blue avoid-break">
+  <strong>FINALIDADE DESTE DOCUMENTO</strong><br>
+  Este documento apresenta uma revisão pedagógica, curricular e editorial integral da documentação do <strong>SokoMath</strong>. O jogo é concebido como ambiente de resolução de problemas em grade, inspirado na mecânica <em>Sokoban</em>, no qual a movimentação espacial de caixas é articulada a desafios matemáticos e a uma trilha complementar de pensamento computacional.
+</div>
+
+<div class="notice-box-amber avoid-break">
+  <strong>ESCOPO E PREMISSA DE VALIDAÇÃO CURRICULAR</strong><br>
+  O alinhamento indicado é uma <strong>proposta de correspondência</strong> entre objetivos de fase e habilidades da BNCC. Ele não constitui homologação, certificação ou chancela oficial do MEC/CNE. A adequação curricular efetiva depende da versão implementada, do planejamento docente, do currículo da rede de ensino e de avaliação formativa com estudantes. Por essa razão, formulações absolutas como <em>“100% alinhado ao MEC”</em>, <em>“fases homologadas”</em> e <em>“sem barreiras de aprendizagem”</em> foram substituídas nesta edição por compromissos verificáveis de design, rigor metodológico e fundamentação aberta a evidências.
+</div>
+
+<div class="info-grid-3 avoid-break">
+  <div class="card">
+    <div class="card-header" style="color:#0284c7;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Arquitetura & Motor
+    </div>
+    <div class="card-body">
+      <strong>Engine:</strong> Godot Engine 4.3 LTS (2D)<br>
+      <strong>Linguagem:</strong> GDScript nativo<br>
+      <strong>Grade:</strong> Ortogonal discreta (64×64 px)<br>
+      <strong>Renderizador:</strong> Compatibility / Mobile<br>
+      <strong>Assets:</strong> Kenney Sokoban (CC0, creditados)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="color:#16a34a;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Escopo e Público Previsto
+    </div>
+    <div class="card-body">
+      <strong>Público:</strong> 1º ao 5º ano do EF (com mediação)<br>
+      <strong>Matemática:</strong> 50 fases estruturadas<br>
+      <strong>Computação:</strong> 10 desafios complementares<br>
+      <strong>Currículo Base:</strong> BNCC Geral (MEC 2018)<br>
+      <strong>Norma Computação:</strong> Res. CNE/CEB nº 1/2022
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="color:#7c3aed;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Critérios de Qualidade e UX
+    </div>
+    <div class="card-body">
+      <strong>Reversibilidade:</strong> Desfazer (Undo) completo<br>
+      <strong>Dispositivos:</strong> Desktop (teclado) e Mobile<br>
+      <strong>Acessibilidade:</strong> Contraste e texto fluido<br>
+      <strong>Ritmo:</strong> Ausência de cronômetro punitivo<br>
+      <strong>Auditoria:</strong> Validação estática pré-publicação
+    </div>
+  </div>
+</div>
+
+<h2 class="subsection-title">Sumário Estruturado da Documentação</h2>
+<table class="doc-table avoid-break">
+  <thead>
+    <tr>
+      <th style="width: 12%;">Seção</th>
+      <th style="width: 32%;">Título & Dimensão</th>
+      <th style="width: 56%;">Conteúdo, Justificativa e Foco Pedagógico</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Seção 01</strong></td>
+      <td><strong>Visão Pedagógica e Limites da Proposta</strong></td>
+      <td>Resolução de problemas em grade, mecânica Sokoban, planejamento espacial, papel da mediação docente e limites da gamificação.</td>
+    </tr>
+    <tr>
+      <td><strong>Seção 02</strong></td>
+      <td><strong>Arquitetura Técnica e Critérios de Qualidade</strong></td>
+      <td>Godot 4.3 LTS, coordenadas inteiras (Vector2i), pilha de estados (Undo Stack), distinção entre validação de autoria e manobras em runtime.</td>
+    </tr>
+    <tr>
+      <td><strong>Seção 03</strong></td>
+      <td><strong>Fundamentos Didáticos, Erro e Metacognição</strong></td>
+      <td>Lentes de Bruner (enativo, icônico, simbólico), pedagogia do erro construtivo, mediação em Vygotsky e progressão por evidências.</td>
+    </tr>
+    <tr>
+      <td><strong>Seção 04</strong></td>
+      <td><strong>Alinhamento Curricular e Referências Normativas</strong></td>
+      <td>Mapeamento das Unidades da BNCC Matemática e Trilha de Computação fundamentada na Resolução CNE/CEB nº 1/2022.</td>
+    </tr>
+    <tr>
+      <td><strong>Seção 05</strong></td>
+      <td><strong>Acessibilidade, Avaliação Formativa e Uso Docente</strong></td>
+      <td>Diretrizes DUA/UDL aplicadas, rotina docente em 5 etapas e auditoria formal das correções conceituais realizadas.</td>
+    </tr>
+    <tr>
+      <td><strong>Seção 06</strong></td>
+      <td><strong>Matriz Curricular Completa (60 Fases)</strong></td>
+      <td>Tabelas das 60 fases (1º ao 5º ano e Trilha Complementar de Computação), com objetivos e operacionalização revisados.</td>
+    </tr>
+    <tr>
+      <td><strong>Seção 07</strong></td>
+      <td><strong>Elementos Gráficos e Diagramas de Análise</strong></td>
+      <td>Diagramas de fluxo, distribuição curricular por eixos temáticos e esquema anotado da interface em jogo (HUD).</td>
+    </tr>
+    <tr>
+      <td><strong>Seção 08</strong></td>
+      <td><strong>Autoria, Mini Biografia e Referências</strong></td>
+      <td>Trajetória de Diego Divino Duenhas, portfólio educacional autoral e referências normativas e acadêmicas completas.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 3: SEÇÃO 01 - VISÃO PEDAGÓGICA E LIMITES             -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">01</span> Visão Pedagógica e Limites da Proposta</h1>
+
+<h2 class="subsection-title">1.1 O Ambiente de Resolução de Problemas em Grade</h2>
+<p class="lead-text">
+  O <strong>SokoMath</strong> propõe que problemas de Matemática sejam enfrentados em uma situação de jogo baseada em deslocamento, planejamento e organização espacial. A mecânica pode tornar visíveis relações fundamentais como ordem, composição de números, arranjo retangular, partilha e leitura de condições lógicas.
+</p>
+<p>
+  Entretanto, <strong>a ação de empurrar caixas não produz aprendizagem matemática automaticamente</strong>. Para que o potencial pedagógico se concretize, cada fase foi projetada para conter:
+</p>
+<ul style="margin:2px 0 8px 0; padding-left:18px; font-size:8pt; line-height:1.4;">
+  <li><strong>Um enunciado inteligível:</strong> Formulação contextualizada em linguagem acessível que explicita o problema a ser investigado.</li>
+  <li><strong>Uma relação matemática representável:</strong> Elementos visuais (caixas, marcas no piso e operadores) que traduzem concretamente conceitos numéricos ou geométricos.</li>
+  <li><strong>Uma mediação orientada:</strong> Estímulo constante para que o estudante formule hipóteses, justifique sua estratégia e verbalize o porquê de cada escolha realizada.</li>
+</ul>
+
+<h2 class="subsection-title">1.2 A Dinâmica Sokoban e o Raciocínio Espacial</h2>
+<p>
+  A mecânica clássica do <em>Sokoban</em> (empurrar caixas em uma grade com restrições de movimento) é pedagogicamente potente porque impõe <strong>irreversibilidade mecânica local</strong>: caixas não podem ser puxadas e cantos criam impasses físicos imediatos. Isso desafia a impulsividade motora e estimula competências essenciais:
+</p>
+
+<div class="info-grid-3 avoid-break">
+  <div class="card">
+    <div class="card-header" style="color:#0284c7;">
+      <strong>Planejamento e Antecipação</strong>
+    </div>
+    <div class="card-body">
+      O jogador precisa projetar mentalmente a sequência de movimentos antes de executá-la, calculando rotas e antevendo possíveis bloqueios na grade.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" style="color:#16a34a;">
+      <strong>Orientação Espacial Concreta</strong>
+    </div>
+    <div class="card-body">
+      A malha ortogonal materializa noções geométricas como vizinhança, alinhamento, contorno e ordenação sequencial no espaço bidimensional.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" style="color:#d97706;">
+      <strong>Persistência e Revisão</strong>
+    </div>
+    <div class="card-body">
+      A possibilidade de desfazer passos transforma o erro em dado empírico, permitindo reiniciar trechos e testar rotas alternativas sem penalização punitiva.
+    </div>
+  </div>
+</div>
+
+<h2 class="subsection-title">1.3 Limites Pedagógicos e Rejeição ao Ritmo Punitivo</h2>
+<p>
+  O design instrucional do SokoMath estabelece limites claros contra distorções comuns em jogos educacionais:
+</p>
+<p>
+  <strong>Desvinculação entre rapidez e competência matemática:</strong> O jogo evita rigorosamente associar o sucesso cognitivo à velocidade motora ou ao menor número estrito de passos. Quando houver contagem de passos na interface, ela opera exclusivamente como <em>dado reflexivo</em> para análise da estratégia adotada pelo estudante, nunca como critério único ou excludente de êxito.
+</p>
+<p>
+  <strong>Ausência de cronômetro regressivo:</strong> A eliminação de limites temporais e inimigos assegura um ambiente de baixo estresse cognitivo, propício para estudantes em diferentes ritmos de aprendizagem ou que demandem tempo expandido para processamento de informações.
+</p>
+
+<h2 class="subsection-title">1.4 Identidade Visual e Apoio Sensorial Suave</h2>
+<p>
+  Os componentes visuais e auditivos (inspirados em texturas de domínio público de <em>Kenney</em> e sons proceduralmente gerados) cumprem funções pedagógicas funcionais:
+</p>
+<ul style="margin:2px 0 4px 0; padding-left:18px; font-size:7.8pt; line-height:1.35;">
+  <li><strong>Caixas Numéricas:</strong> Contornos de alto contraste com valores numéricos ou símbolos lógicos tipograficamente legíveis.</li>
+  <li><strong>Receptores no Piso (Target Plates):</strong> Indicação explícita da condição matemática (ex.: <em>"Vaga PAR"</em>, <em>"5 − 2 = ?"</em>, <em>"Metade de 16"</em>), com confirmação multimodal ao ser preenchida.</li>
+  <li><strong>Porta de Saída e Sinalização:</strong> Desbloqueio visível e sonoro suave após a validação lógica, indicando a conclusão do objetivo.</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 4: SEÇÃO 02 - ARQUITETURA TÉCNICA (GODOT 4)           -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">02</span> Arquitetura Técnica e Critérios de Qualidade (Godot Engine 4)</h1>
+
+<h2 class="subsection-title">2.1 Separação Modular e Fluxo de Controle</h2>
+<p class="lead-text">
+  Desenvolvido no <strong>Godot Engine 4.3 LTS</strong> em linguagem <strong>GDScript</strong>, o SokoMath adota separação modular rigorosa entre dados de fase (<code>LevelData</code>), controle de movimentação e estados (<code>LevelManager</code>), regras de validação (<code>_evaluate_game_state</code>), interface (HUD), áudio e persistência.
+</p>
+
+<!-- DIAGRAMA ARQUITETURAL SVG REVISADO -->
+<div class="diagram-wrapper avoid-break">
+  <div style="font-weight:700; font-size:8.2pt; color:#0f172a; margin-bottom:6px; text-align:center;">
+    ARQUITETURA DO SISTEMA: FLUXO DE CONTROLE, HISTÓRICO DE ESTADOS E AVALIAÇÃO DE REGRAS
+  </div>
+  <svg width="100%" height="150" viewBox="0 0 720 150" style="display:block; margin:0 auto;">
+    <rect x="10" y="10" width="125" height="58" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="72" y="32" font-family="Segoe UI, sans-serif" font-size="9" font-weight="700" fill="#0f172a" text-anchor="middle">DISPOSITIVO / ENTRADA</text>
+    <text x="72" y="46" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#475569" text-anchor="middle">Teclado (Setas / WASD)</text>
+    <text x="72" y="58" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#475569" text-anchor="middle">D-Pad Virtual / Toque</text>
+
+    <path d="M 135 39 L 170 39" stroke="#64748b" stroke-width="2"/>
+
+    <rect x="175" y="6" width="215" height="66" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <text x="282" y="25" font-family="Segoe UI, sans-serif" font-size="10" font-weight="800" fill="#0369a1" text-anchor="middle">LevelManager.gd</text>
+    <text x="282" y="40" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#0c4a6e" text-anchor="middle">• Movimentação em Grade Inteira (Vector2i)</text>
+    <text x="282" y="52" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#0c4a6e" text-anchor="middle">• Snapshot Stack (Pilha de Desfazer - Undo)</text>
+    <text x="282" y="64" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#0c4a6e" text-anchor="middle">• Gestão de Coordenadas e Colisões</text>
+
+    <path d="M 390 39 L 420 39" stroke="#64748b" stroke-width="2"/>
+
+    <rect x="425" y="6" width="165" height="66" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="507" y="25" font-family="Segoe UI, sans-serif" font-size="9.5" font-weight="800" fill="#b45309" text-anchor="middle">Avaliador de Regras</text>
+    <text x="507" y="40" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#78350f" text-anchor="middle">_evaluate_game_state()</text>
+    <text x="507" y="52" font-family="Segoe UI, sans-serif" font-size="6.8" fill="#78350f" text-anchor="middle">VAGAS_ALVO • PARIDADE • SOMAS</text>
+    <text x="507" y="64" font-family="Segoe UI, sans-serif" font-size="6.8" fill="#78350f" text-anchor="middle">PORTAS BOOLEANAS (AND / OR)</text>
+
+    <path d="M 590 39 L 615 39" stroke="#64748b" stroke-width="2"/>
+
+    <rect x="620" y="10" width="90" height="58" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="665" y="32" font-family="Segoe UI, sans-serif" font-size="8.5" font-weight="700" fill="#15803d" text-anchor="middle">ESTADO</text>
+    <text x="665" y="46" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#166534" text-anchor="middle">Meta Atingida</text>
+    <text x="665" y="58" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#166534" text-anchor="middle">Porta Aberta</text>
+
+    <rect x="50" y="85" width="180" height="44" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="140" y="103" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#334155" text-anchor="middle">LevelData.gd</text>
+    <text x="140" y="118" font-family="Segoe UI, sans-serif" font-size="6.8" fill="#64748b" text-anchor="middle">60 Fases • BNCC • Metas • Layouts</text>
+
+    <rect x="270" y="85" width="180" height="44" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="360" y="103" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#334155" text-anchor="middle">Interface & HUD</text>
+    <text x="360" y="118" font-family="Segoe UI, sans-serif" font-size="6.8" fill="#64748b" text-anchor="middle">Enunciado Dinâmico • Passos • D-Pad</text>
+
+    <rect x="490" y="85" width="180" height="44" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="580" y="103" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#334155" text-anchor="middle">SoundManager.gd</text>
+    <text x="580" y="118" font-family="Segoe UI, sans-serif" font-size="6.8" fill="#64748b" text-anchor="middle">Áudio Suave • Push • Confirmação</text>
+  </svg>
+  <div class="diagram-caption">Figura 2.1 — Diagrama de Arquitetura Técnica e Lógica de Execução no Godot Engine 4.</div>
+</div>
+
+<h2 class="subsection-title">2.2 Grade com Coordenadas Inteiras (Vector2i) e Determinismo</h2>
+<p>
+  A grade opera em coordenadas inteiras estritas (<code>Vector2i</code>), com tamanho de ladrilho padronizado em 64×64 pixels. Essa abordagem elimina problemas de arredondamento de ponto flutuante, garante reprodutibilidade rigorosa da movimentação e simplifica o cálculo de ocupação espacial das células.
+</p>
+
+<h2 class="subsection-title">2.3 Histórico de Estados e Pilha de Desfazer (Undo Stack)</h2>
+<p>
+  A estrutura de reversibilidade armazena o estado do jogo antes de cada ação reversível:
+</p>
+<pre style="background:#f8fafc; border:1px solid #e2e8f0; padding:5px 8px; border-radius:4px; font-family:'Segoe UI Mono', Consolas, monospace; font-size:6.8pt; color:#334155; margin:3px 0 6px 0;">
+history_stack: Array[Dictionary] = [
+    {{ "player_pos": Vector2i(x, y), "crates": [{{ "id": 1, "pos": Vector2i(cx, cy), "value": 15 }}], "step_count": n }}
+]
+</pre>
+<p>
+  Ao acionar a tecla de desfazer ou o botão correspondente na interface, o sistema realiza um <em>pop</em> na pilha e restaura a configuração imediatamente anterior. Essa funcionalidade é central para a experimentação de hipóteses e para a autorregulação metacognitiva do estudante.
+</p>
+
+<h2 class="subsection-title">2.4 Critérios de Qualidade: Validação Prévia de Mapas vs. Runtime</h2>
+<div class="notice-box-amber avoid-break">
+  <strong>DELIMITAÇÃO TÉCNICA IMPORTANTE: SANITIZAÇÃO E DISTÂNCIA MANHATTAN</strong><br>
+  A expressão <em>“sanitização preventiva”</em> deve ser empregada com cautela conceitual. Em vez de reposicionar automaticamente caixas em tempo de execução — prática que pode distorcer a intenção do desafio e mascarar erros de design de fase —, o sistema adota como critério de qualidade a <strong>validação de cada mapa na fase de autoria</strong>, antes de sua disponibilização. Essa verificação checa alcances, metas, becos sem saída óbvios e solvabilidade global.
+  <br><br>
+  A <strong>distância Manhattan mínima</strong> (|x₂ − x₁| + |y₂ − y₁|) calcula proximidade geométrica em malhas ortogonais sem diagonais. Trata-se de uma métrica útil para estimar vizinhança entre células, mas <strong>não prova existência de rota livre nem garante solvabilidade em puzzles Sokoban</strong>. Por isso, a garantia de solvabilidade deve emanar do design estrutural e de testes sistemáticos de fase.
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 5: SEÇÃO 03 - FUNDAMENTOS DIDÁTICOS E ERRO           -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">03</span> Fundamentos Didáticos, Erro e Metacognição</h1>
+
+<h2 class="subsection-title">3.1 Os Modos de Representação de Jerome Bruner como Lente de Design</h2>
+<p class="lead-text">
+  A aproximação aos modos de representação formulados por Jerome Bruner constitui uma lente orientadora de design pedagógico no SokoMath: os modos <strong>Enativo</strong> (agir e deslocar fisicamente), <strong>Icônico</strong> (malha, marcas no chão e representações visuais) e <strong>Simbólico</strong> (números, operadores, frações e regras formais).
+</p>
+<p>
+  Esses modos <strong>não devem ser interpretados como uma sequência cronológica obrigatória e rígida</strong> na qual a criança é impedida de ver símbolos até que manipule objetos. No SokoMath, a interface <strong>articula simultaneamente os três modos</strong>, promovendo idas e vindas dinâmicas entre ação, visualização espacial e notação formal.
+</p>
+
+<!-- DIAGRAMA DE BRUNER SVG REVISADO -->
+<div class="diagram-wrapper avoid-break">
+  <div style="font-weight:700; font-size:8.2pt; color:#0f172a; margin-bottom:6px; text-align:center;">
+    ARTICULAÇÃO NÃO LINEAR DOS TRÊS MODOS DE REPRESENTAÇÃO NO SOKOMATH
+  </div>
+  <svg width="100%" height="105" viewBox="0 0 700 105" style="display:block; margin:0 auto;">
+    <rect x="15" y="10" width="205" height="85" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="117" y="28" font-family="Segoe UI, sans-serif" font-size="9.5" font-weight="800" fill="#15803d" text-anchor="middle">MODO ENATIVO</text>
+    <text x="117" y="42" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="700" fill="#166534" text-anchor="middle">(Ação Motora e Deslocamento)</text>
+    <text x="117" y="58" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#166534" text-anchor="middle">• Empurrar caixas na grade</text>
+    <text x="117" y="70" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#166534" text-anchor="middle">• Sentir a resistência de obstáculos</text>
+    <text x="117" y="82" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#166534" text-anchor="middle">• Experimentação física direta</text>
+
+    <path d="M 225 52 L 255 52" stroke="#64748b" stroke-width="2"/>
+
+    <rect x="260" y="10" width="205" height="85" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="362" y="28" font-family="Segoe UI, sans-serif" font-size="9.5" font-weight="800" fill="#0369a1" text-anchor="middle">MODO ICÔNICO</text>
+    <text x="362" y="42" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="700" fill="#075985" text-anchor="middle">(Representações Visuais e Malha)</text>
+    <text x="362" y="58" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#075985" text-anchor="middle">• Malha quadriculada ordenada</text>
+    <text x="362" y="70" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#075985" text-anchor="middle">• Receptores e marcas no piso</text>
+    <text x="362" y="82" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#075985" text-anchor="middle">• Cores e pistas espaciais</text>
+
+    <path d="M 470 52 L 500 52" stroke="#64748b" stroke-width="2"/>
+
+    <rect x="505" y="10" width="180" height="85" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+    <text x="595" y="28" font-family="Segoe UI, sans-serif" font-size="9.5" font-weight="800" fill="#b45309" text-anchor="middle">MODO SIMBÓLICO</text>
+    <text x="595" y="42" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="700" fill="#78350f" text-anchor="middle">(Formalização e Notação)</text>
+    <text x="595" y="58" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#78350f" text-anchor="middle">• Sentenças numéricas e igualdades</text>
+    <text x="595" y="70" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#78350f" text-anchor="middle">• Frações, decimais e porcentagem</text>
+    <text x="595" y="82" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#78350f" text-anchor="middle">• Regras booleanas e operadores</text>
+  </svg>
+  <div class="diagram-caption">Figura 3.1 — Integração Multimodal no SokoMath: Diálogo Contínuo entre Ação, Imagem e Notação Simbólica.</div>
+</div>
+
+<h2 class="subsection-title">3.2 Pedagogia do Erro Construtivo e Autorregulação Metacognitiva</h2>
+<p>
+  No SokoMath, <strong>um erro é tratado como informação para a aprendizagem, não como punição</strong>. Ao posicionar uma caixa em local incompatível ou atingir uma situação sem solução local, o sistema sinaliza o estado visualmente e oferece pistas breves, sem encerrar a partida abruptamente nem zerar o percurso do jogador.
+</p>
+<p>
+  O recurso de <strong>Desfazer (Undo)</strong> é o instrumento pedagógico central desse processo. Ele permite:
+</p>
+<ul style="margin:2px 0 6px 0; padding-left:18px; font-size:7.8pt; line-height:1.35;">
+  <li>Revisar decisões imediatamente após constatar seus efeitos na grade.</li>
+  <li>Testar hipóteses alternativas sem medo de penalização permanente.</li>
+  <li>Comparar caminhos distintos para a mesma relação matemática.</li>
+</ul>
+<p>
+  Esse ciclo contínuo — <strong>tentativa → feedback → explicação → revisão → nova tentativa</strong> — apoia o desenvolvimento da autorregulação metacognitiva e do pensamento crítico (conforme apontado nas diretrizes da <em>Education Endowment Foundation</em>).
+</p>
+
+<h2 class="subsection-title">3.3 Mediação Formativa e Suporte Gradual (Scaffolding em Vygotsky)</h2>
+<p>
+  A fundamentação em Lev Vygotsky é aqui compreendida com precisão: o painel do jogo e suas sinalizações operam como <strong>mediação instrumental e apoio gradual (scaffolding)</strong>, e não como geradores automáticos de autonomia.
+</p>
+<p>
+  O sistema fornece feedbacks reflexivos que orientam o olhar da criança — indagando, por exemplo: <em>“O que nesta posição impede o avanço da rota?”</em> ou <em>“Qual decisão anterior pode ser revista?”</em> —, em vez de emitir meros julgamentos de “certo” ou “errado”. Essa postura convida o professor a atuar como mediador qualificado, promovendo discussões entre pares e solicitando justificativas para cada estratégia.
+</p>
+
+<h2 class="subsection-title">3.4 Progressão por Evidências e os Desafios Integradores</h2>
+<p>
+  A progressão curricular do 1º ao 5º ano apoia-se em <strong>evidências graduais de complexidade</strong>: quantidade de caixas em jogo, número de condições simultâneas a satisfazer, grau de antecipação requerido e notação matemática exigida. Cada ano culmina em um <strong>Desafio Integrador (Fase 10)</strong>, que mobiliza os objetivos desenvolvidos nas fases anteriores em situações contextualizadas, sem introduzir notações ou operações inéditas sem preparo prévio.
+</p>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 6: SEÇÃO 04 - ALINHAMENTO CURRICULAR BNCC            -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">04</span> Alinhamento Curricular e Referências Normativas</h1>
+
+<h2 class="subsection-title">4.1 A BNCC Matemática e a Matriz de Unidades Temáticas</h2>
+<p class="lead-text">
+  A Base Nacional Comum Curricular (MEC, 2018) organiza a Matemática no Ensino Fundamental em cinco unidades temáticas: <em>Números</em>, <em>Álgebra</em>, <em>Geometria</em>, <em>Grandezas e Medidas</em>, e <em>Probabilidade e Estatística</em>. O SokoMath utiliza as habilidades oficiais da BNCC como <strong>referências estruturantes de planejamento</strong>. Contudo, o código alfanumérico não substitui a explicitação do objeto de conhecimento, das evidências de aprendizagem e da mediação pedagógica necessária.
+</p>
+
+<table class="doc-table avoid-break" style="margin-bottom:10px;">
+  <thead>
+    <tr>
+      <th style="width: 20%;">Unidade Temática</th>
+      <th style="width: 14%;">Fases no Jogo</th>
+      <th style="width: 26%;">Habilidades de Referência</th>
+      <th style="width: 40%;">Operacionalização no SokoMath</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Números</strong></td>
+      <td><strong>32 fases</strong> (53,3%)</td>
+      <td>EF01MA02,03,04,05,06,08 • EF02MA01,05,06<br>EF03MA05,06,07,08,09 • EF04MA03,06,07,09<br>EF05MA01,02,03,04,06,07</td>
+      <td>Contagem, ordenação posicional, correspondência um a um, adição/subtração com significados de juntar e retirar, arranjo retangular, partilha e medida, frações usuais/equivalentes e representação decimal finita.</td>
+    </tr>
+    <tr>
+      <td><strong>Álgebra</strong></td>
+      <td><strong>8 fases</strong> (13,3%)</td>
+      <td>EF01MA09, EF01MA10<br>EF02MA09 • EF03MA10<br>EF04MA06, EF05MA12</td>
+      <td>Identificação de regularidades, padrões repetitivos (AB), sequências numéricas recursivas com saltos (+1, +4, +5), relações inversas e problemas de proporcionalidade direta.</td>
+    </tr>
+    <tr>
+      <td><strong>Grandezas e Medidas</strong></td>
+      <td><strong>5 fases</strong> (8,3%)</td>
+      <td>EF04MA20, EF04MA21<br>EF05MA07, EF05MA20</td>
+      <td>Medição e contorno de perímetros, cálculo de área de figuras planas por contagem de quadradinhos em malha e situações de compra/troco com moedas.</td>
+    </tr>
+    <tr>
+      <td><strong>Geometria</strong></td>
+      <td><strong>3 fases</strong> (5,0%)</td>
+      <td>EF01MA05, EF02MA01, EF04MA20</td>
+      <td>Localização espacial relativa (posição intermediária, anterior e posterior), navegação ortogonal em corredores e distinção visual entre contorno e superfície plana.</td>
+    </tr>
+    <tr>
+      <td><strong>Probabilidade e Estatística</strong></td>
+      <td><strong>2 fases</strong> (3,3%)</td>
+      <td>EF04MA27, EF05MA24</td>
+      <td>Leitura, interpretação e comparação de dados representados em gráficos de colunas e tabelas simples de pesquisa para resolução de problemas.</td>
+    </tr>
+    <tr>
+      <td><strong>Computação (Trilha Extra)</strong></td>
+      <td><strong>10 fases</strong> (16,7%)</td>
+      <td>Resolução CNE/CEB nº 1/2022<br>(Eixo Pensamento Computacional)</td>
+      <td>Sequências determinísticas de passos, reconhecimento de padrões, decomposição de rotas, condições lógicas se/então, lógica booleana (AND/OR) e depuração de falhas.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="subsection-title">4.2 Tabela de Habilidades Oficiais Auditadas (BNCC / MEC)</h2>
+<table class="doc-table avoid-break">
+  <thead>
+    <tr>
+      <th style="width: 14%;">Código</th>
+      <th style="width: 10%;">Ano</th>
+      <th style="width: 44%;">Texto Oficial da Habilidade (BNCC / MEC)</th>
+      <th style="width: 32%;">Aplicação no Ambiente SokoMath</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="badge-bncc">EF01MA04</span></td>
+      <td>1º Ano</td>
+      <td>Contar a quantidade de objetos de coleções até 100 unidades e apresentar o resultado por registros verbais e simbólicos.</td>
+      <td>Fase 1: Contagem das caixas presentes na sala e seleção do numeral correspondente.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF01MA02</span></td>
+      <td>1º Ano</td>
+      <td>Contar de maneira exata ou aproximada, utilizando diferentes estratégias como o pareamento e outros agrupamentos.</td>
+      <td>Fase 2: Correspondência um a um associando cada caixa a um receptor demarcado.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF02MA01</span></td>
+      <td>2º Ano</td>
+      <td>Comparar e ordenar números naturais (até centenas) pela compreensão de características do sistema decimal.</td>
+      <td>Fases 1, 2 e 3: Ordenação de dezenas exatas (10, 20, 30) e posicionamento na reta numérica.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF02MA09</span></td>
+      <td>2º Ano</td>
+      <td>Construir sequências de números naturais em ordem crescente ou decrescente a partir de um padrão estabelecido.</td>
+      <td>Fases 8 e 9: Regularidades numéricas (+5) e classificação de paridade como ampliação curricular.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF03MA08</span></td>
+      <td>3º Ano</td>
+      <td>Resolver problemas de divisão com os significados de repartição equitativa e de medida.</td>
+      <td>Fases 4, 6 e 7: Arranjo retangular (3×5), repartição de 18 figurinhas e grupos de 4 em 24.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF03MA09</span></td>
+      <td>3º Ano</td>
+      <td>Associar quocientes de divisões exatas de números naturais à metade, terça, quarta, quinta e décima partes.</td>
+      <td>Fase 8: Resolução de 16 ÷ 2 e 15 ÷ 3 e associação direta a 1/2 e 1/3 do total.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF04MA20</span></td>
+      <td>4º Ano</td>
+      <td>Medir e estimar comprimento de figuras planas, incluindo o cálculo de perímetros.</td>
+      <td>Fases 7 e 10: Determinação do perímetro em sala retangular (4m × 3m) e quadrado de lado 6m.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF04MA21</span></td>
+      <td>4º Ano</td>
+      <td>Medir, comparar e estimar área de figuras planas em malha quadriculada por contagem de quadradinhos.</td>
+      <td>Fase 8: Contagem de unidades quadradas em malha ortogonal (5 × 3 = 15 quadradinhos).</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF05MA04</span></td>
+      <td>5º Ano</td>
+      <td>Identificar frações equivalentes.</td>
+      <td>Fase 4: Reconhecimento de equivalência entre 2/4 e 1/2 de conjunto de 12 elementos (6 partes).</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF05MA20</span></td>
+      <td>5º Ano</td>
+      <td>Investigar relações entre áreas e perímetros de figuras planas traçadas em malha quadriculada.</td>
+      <td>Fase 9: Comparação entre retângulos constatando que figuras de mesma área podem ter perímetros distintos.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-bncc">EF05MA24</span></td>
+      <td>5º Ano</td>
+      <td>Interpretar dados estatísticos apresentados em textos, tabelas e gráficos em diferentes contextos.</td>
+      <td>Fase 10: Leitura de dados de pesquisa esportiva e resolução de problema integrador envolvendo dobro.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 7: SEÇÃO 05 - ACESSIBILIDADE, AVALIAÇÃO & AUDITORIA   -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">05</span> Acessibilidade, Avaliação Formativa e Auditoria</h1>
+
+<h2 class="subsection-title">5.1 Acessibilidade e Desenho Universal para a Aprendizagem (DUA / UDL)</h2>
+<p class="lead-text">
+  Acessibilidade no SokoMath não se restringe a recursos isolados de alto contraste ou texto ampliado. O projeto incorpora os princípios do <strong>Desenho Universal para a Aprendizagem (DUA / UDL)</strong> como compromisso prático de design instrucional e de interação:
+</p>
+
+<div class="info-grid-2 avoid-break">
+  <div class="card">
+    <div class="card-header" style="color:#0284c7;">
+      <strong>Múltiplas Formas de Representação</strong>
+    </div>
+    <div class="card-body">
+      • Informação transmitida simultaneamente por <strong>texto, ícone e cor</strong> (redundância sensorial).<br>
+      • Textos e enunciados redimensionáveis sem quebra ou sobreposição de leiaute.<br>
+      • Relação de contraste visual testada para legibilidade em diferentes condições de iluminação.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" style="color:#16a34a;">
+      <strong>Múltiplas Formas de Ação e Expressão</strong>
+    </div>
+    <div class="card-body">
+      • <strong>Navegação integral por teclado</strong>, com indicador de foco visível em todos os controles.<br>
+      • Alvos de toque generosos para dispositivos móveis com suporte a D-Pad virtual e gestos de deslizamento.<br>
+      • Ausência de limite de tempo punitivo, respeitando diferentes ritmos motores e cognitivos.
+    </div>
+  </div>
+</div>
+
+<h2 class="subsection-title">5.2 Avaliação Formativa e Proposta de Rotina Pedagógica Docente</h2>
+<p>
+  Recomenda-se que o professor utilize os registros e métricas do jogo de maneira formativa: número de tentativas, momentos de uso do botão Desfazer, explicações verbais dos estudantes e categorias de hipóteses levantadas. Sugere-se a seguinte rotina em cinco etapas:
+</p>
+
+<div class="info-grid-3 avoid-break">
+  <div class="card">
+    <div class="card-header" style="color:#7c3aed;">
+      <strong>1. Antecipar a Rota</strong>
+    </div>
+    <div class="card-body">
+      O estudante observa o mapa antes de tocar no teclado, projeta mentalmente os movimentos e descreve a estratégia planejada.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" style="color:#0891b2;">
+      <strong>2. Experimentar e Registrar</strong>
+    </div>
+    <div class="card-body">
+      Execução individual ou em duplas. Ao encontrar um bloqueio, o aluno registra qual decisão gerou o impasse antes de acionar o Undo.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" style="color:#b45309;">
+      <strong>3. Socializar e Formalizar</strong>
+    </div>
+    <div class="card-body">
+      Debate coletivo de estratégias divergentes e retomada da relação matemática em registros no caderno, lousa ou materiais manipuláveis.
+    </div>
+  </div>
+</div>
+
+<h2 class="subsection-title">5.3 Auditoria das Correções Realizadas Nesta Edição Revisada</h2>
+<div class="notice-box avoid-break">
+  <strong style="font-size:8pt;">QUADRO FORMAL DE AUDITORIA E RETIFICAÇÕES EDITORIAIS:</strong>
+  <ul style="margin:4px 0 2px 0; padding-left:16px; font-size:7.2pt; line-height:1.35; color:#166534;">
+    <li><strong>Retirada de alegações absolutas:</strong> Foram removidas alegações como “100% alinhado ao MEC”, “fases homologadas” e “sem barreiras de aprendizagem”, substituídas pelo enquadramento ético de proposta de alinhamento curricular.</li>
+    <li><strong>Retificação da norma de Computação:</strong> Correção da base legal para <strong>Resolução CNE/CEB nº 1, de 4 de outubro de 2022</strong> (e não CNE/CP nº 1/2022).</li>
+    <li><strong>Precisão no código de habilidades:</strong> Correção das correspondências: EF03MA08 para divisão e arranjo retangular; EF03MA09 para frações usuais; EF04MA21 para área em malha quadriculada; EF05MA20 para relação área-perímetro; EF05MA24 para leitura de tabelas/gráficos.</li>
+    <li><strong>Refinamento conceitual de Bruner e Vygotsky:</strong> Tratamento dos modos de Bruner como lentes de design não rígidas e caracterização da interface como mediação/scaffolding, não causa direta de autorregulação.</li>
+    <li><strong>Delimitação de conceitos técnicos:</strong> A “distância Manhattan” foi formalizada como métrica geométrica de proximidade, distinguindo-se de garantias de desobstrução ou solvabilidade, que passam a ser atribuídas à validação de autoria.</li>
+  </ul>
+</div>
+"""
+
+    # ============================================================
+    # PÁGINAS 8 A 13: MATRIZ CURRICULAR DAS 60 FASES
+    # ============================================================
+    track_keys = ["1º Ano", "2º Ano", "3º Ano", "4º Ano", "5º Ano", "Desafios Extras"]
+    for t_name in track_keys:
+        phases = rev_tracks.get(t_name, [])
+        c_info = track_colors.get(t_name, {"primary": "#334155", "light": "#f1f5f9", "border": "#cbd5e1", "badge": "#0f172a"})
+        sub = track_subtitles.get(t_name, "Trilha Curricular")
+
+        badge_class = "badge-pc" if t_name == "Desafios Extras" else "badge-bncc"
+        track_display = t_name.upper() if t_name != "Desafios Extras" else "COMPUTAÇÃO — TRILHA COMPLEMENTAR"
+
+        html_content += f"""
+<div class="page-break avoid-break">
+  <div class="track-header-card" style="background: linear-gradient(135deg, {c_info['primary']} 0%, {c_info['badge']} 100%);">
+    <div>
+      <h2 class="track-header-title">{track_display} • {sub}</h2>
+      <div class="track-header-desc">Matriz de 10 Fases: Objetivos Pedagógicos, Referências Curriculares e Operacionalização no Jogo</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 999px; font-size: 7.5pt; font-weight: 800; letter-spacing: 0.5px;">
+      10 FASES
+    </div>
+  </div>
+
+  <table class="doc-table">
+    <thead>
+      <tr style="background: {c_info['badge']};">
+        <th style="width: 4%; text-align:center;">Fase</th>
+        <th style="width: 17%;">Título & Referência</th>
+        <th style="width: 24%;">Objetivo Pedagógico</th>
+        <th style="width: 28%;">Operacionalização no Jogo & Mecânica</th>
+        <th style="width: 14%;">Vagas & Caixas</th>
+        <th style="width: 13%;">Feedback no Jogo</th>
+      </tr>
+    </thead>
+    <tbody>
+"""
+        for r in phases:
+            fase_num = html.escape(str(r['fase']))
+            titulo = html.escape(str(r['titulo']))
+            ref_curr = html.escape(str(r['ref_curr']))
+            obj = html.escape(str(r['objetivo']))
+            operac = html.escape(str(r['operacionalizacao']))
+            vagas = html.escape(str(r['vagas']))
+            caixas = html.escape(str(r['caixas']))
+            sucesso = html.escape(str(r['sucesso']))
+
+            codes = [c.strip() for c in ref_curr.split(";")]
+            badge_html = ""
+            for cd in codes:
+                badge_html += f'<span class="{badge_class}">{cd}</span> '
+
+            html_content += f"""
+      <tr>
+        <td style="text-align:center; font-weight:800; font-size:8pt; color:{c_info['primary']};">{fase_num}</td>
+        <td>
+          <strong style="color:#0f172a; font-size:7.2pt;">{titulo}</strong>
+          <div style="margin-top:2px;">{badge_html}</div>
+        </td>
+        <td>{obj}</td>
+        <td>{operac}</td>
+        <td>
+          <div style="margin-bottom:2px;"><span class="badge-target">Vagas:</span> {vagas if vagas else "[Livre]"}</div>
+          <div><span class="badge-crates">Caixas:</span> <strong>{caixas}</strong></div>
+        </td>
+        <td style="color:#15803d; font-weight:600; font-size:6.3pt;">{sucesso}</td>
+      </tr>
+"""
+        html_content += """
+    </tbody>
+  </table>
+</div>
+"""
+
+    # ============================================================
+    # PÁGINA 14: ELEMENTOS VISUAIS E ANÁLISE GRÁFICA
+    # ============================================================
+    html_content += """
+<!-- ============================================================ -->
+<!-- PÁGINA 14: ELEMENTOS VISUAIS, GRÁFICOS E INTERFACE (HUD)    -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">07</span> Elementos Visuais, Gráficos e Análise da Interface</h1>
+
+<h2 class="subsection-title">7.1 Gráfico de Distribuição Curricular das Fases (Total: 60 Fases)</h2>
+<div class="diagram-wrapper avoid-break">
+  <div style="font-weight:700; font-size:8.2pt; color:#0f172a; margin-bottom:6px; text-align:center;">
+    PROPORÇÃO DE FASES POR UNIDADE TEMÁTICA E TRILHA COMPLEMENTAR
+  </div>
+  <svg width="100%" height="165" viewBox="0 0 700 165" style="display:block; margin:0 auto;">
+    <line x1="160" y1="12" x2="160" y2="150" stroke="#cbd5e1" stroke-width="1.5"/>
+    
+    <text x="150" y="28" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#334155" text-anchor="end">Números & Operações</text>
+    <rect x="160" y="18" width="373" height="14" rx="3" fill="#0284c7"/>
+    <text x="540" y="30" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#0369a1">32 fases (53,3%)</text>
+
+    <text x="150" y="52" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#334155" text-anchor="end">Pensamento Computacional</text>
+    <rect x="160" y="42" width="116" height="14" rx="3" fill="#0891b2"/>
+    <text x="285" y="54" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#0e7490">10 fases (16,7%)</text>
+
+    <text x="150" y="76" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#334155" text-anchor="end">Álgebra & Padrões</text>
+    <rect x="160" y="66" width="93" height="14" rx="3" fill="#d97706"/>
+    <text x="262" y="78" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#b45309">8 fases (13,3%)</text>
+
+    <text x="150" y="100" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#334155" text-anchor="end">Grandezas & Medidas</text>
+    <rect x="160" y="90" width="58" height="14" rx="3" fill="#7c3aed"/>
+    <text x="226" y="102" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#6d28d9">5 fases (8,3%)</text>
+
+    <text x="150" y="124" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#334155" text-anchor="end">Geometria Espacial</text>
+    <rect x="160" y="114" width="35" height="14" rx="3" fill="#16a34a"/>
+    <text x="203" y="126" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#15803d">3 fases (5,0%)</text>
+
+    <text x="150" y="148" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#334155" text-anchor="end">Estatística & Gráficos</text>
+    <rect x="160" y="138" width="23" height="14" rx="3" fill="#e11d48"/>
+    <text x="191" y="150" font-family="Segoe UI, sans-serif" font-size="7.8" font-weight="700" fill="#be123c">2 fases (3,3%)</text>
+  </svg>
+  <div class="diagram-caption">Figura 7.1 — Distribuição Proporcional das 60 Fases no SokoMath.</div>
+</div>
+
+<h2 class="subsection-title">7.2 Esquema Anotado da Interface do Usuário (HUD e Painel Pedagógico)</h2>
+<div class="diagram-wrapper avoid-break">
+  <div style="font-weight:700; font-size:8.2pt; color:#0f172a; margin-bottom:6px; text-align:center;">
+    ARQUITETURA DE INTERFACE: INTEGRAÇÃO ENTRE ENUNCIADO, REVERSIBILIDADE E GRID LÓGICO
+  </div>
+  <svg width="100%" height="200" viewBox="0 0 720 200" style="display:block; margin:0 auto;">
+    <rect x="150" y="8" width="420" height="182" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+
+    <rect x="155" y="13" width="410" height="24" rx="4" fill="#1e293b"/>
+    <text x="170" y="29" font-family="Segoe UI, sans-serif" font-size="8.2" font-weight="700" fill="#38bdf8">3º ANO • FASE 4</text>
+    <text x="360" y="29" font-family="Segoe UI, sans-serif" font-size="7.2" fill="#e2e8f0" text-anchor="middle">Passos: 6 (Dado de análise reflexiva)</text>
+    <rect x="505" y="17" width="52" height="16" rx="3" fill="#334155"/>
+    <text x="531" y="28" font-family="Segoe UI, sans-serif" font-size="6.8" font-weight="700" fill="#ffffff" text-anchor="middle">Z: DESFAZER</text>
+
+    <rect x="155" y="40" width="410" height="22" rx="4" fill="#334155"/>
+    <text x="360" y="54" font-family="Segoe UI, sans-serif" font-size="6.8" fill="#f8fafc" text-anchor="middle">"Uma horta possui 3 fileiras com 5 canteiros cada. Calcule o arranjo retangular."</text>
+
+    <rect x="185" y="66" width="350" height="92" rx="4" fill="#1e1b4b"/>
+    
+    <rect x="200" y="76" width="18" height="18" rx="2" fill="#475569"/>
+    <rect x="200" y="100" width="18" height="18" rx="2" fill="#475569"/>
+    <rect x="200" y="124" width="18" height="18" rx="2" fill="#475569"/>
+    
+    <circle cx="245" cy="110" r="10" fill="#38bdf8"/>
+    <text x="245" y="113" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="800" fill="#0f172a" text-anchor="middle">P</text>
+
+    <rect x="285" y="101" width="18" height="18" rx="3" fill="#b45309" stroke="#fde68a" stroke-width="1.5"/>
+    <text x="294" y="114" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="800" fill="#ffffff" text-anchor="middle">3</text>
+
+    <rect x="345" y="115" width="18" height="18" rx="3" fill="#b45309" stroke="#fde68a" stroke-width="1.5"/>
+    <text x="354" y="128" font-family="Segoe UI, sans-serif" font-size="7.5" font-weight="800" fill="#ffffff" text-anchor="middle">5</text>
+
+    <rect x="420" y="88" width="26" height="26" rx="4" fill="none" stroke="#38bdf8" stroke-dasharray="3,3" stroke-width="1.5"/>
+    <text x="433" y="103" font-family="Segoe UI, sans-serif" font-size="5.8" font-weight="700" fill="#38bdf8" text-anchor="middle">LINHAS</text>
+
+    <rect x="420" y="120" width="26" height="26" rx="4" fill="none" stroke="#38bdf8" stroke-dasharray="3,3" stroke-width="1.5"/>
+    <text x="433" y="135" font-family="Segoe UI, sans-serif" font-size="5.4" font-weight="700" fill="#38bdf8" text-anchor="middle">COLUNAS</text>
+
+    <rect x="495" y="104" width="18" height="24" rx="2" fill="#22c55e"/>
+    <text x="504" y="119" font-family="Segoe UI, sans-serif" font-size="6.2" font-weight="800" fill="#0f172a" text-anchor="middle">SAÍDA</text>
+
+    <rect x="155" y="162" width="410" height="20" rx="3" fill="#1e293b"/>
+    <text x="360" y="175" font-family="Segoe UI, sans-serif" font-size="6.6" fill="#4ade80" text-anchor="middle">Arranjo retangular: 3 × 5 = 15 canteiros satisfeito! Porta de saída destravada.</text>
+
+    <line x1="85" y1="25" x2="150" y2="25" stroke="#64748b" stroke-width="1"/>
+    <text x="80" y="28" font-family="Segoe UI, sans-serif" font-size="6.8" font-weight="700" fill="#475569" text-anchor="end">Topo: Status & Desfazer</text>
+
+    <line x1="85" y1="51" x2="150" y2="51" stroke="#64748b" stroke-width="1"/>
+    <text x="80" y="54" font-family="Segoe UI, sans-serif" font-size="6.8" font-weight="700" fill="#475569" text-anchor="end">Enunciado Didático</text>
+
+    <line x1="635" y1="116" x2="570" y2="116" stroke="#64748b" stroke-width="1"/>
+    <text x="640" y="119" font-family="Segoe UI, sans-serif" font-size="6.8" font-weight="700" fill="#475569" text-anchor="start">Saída Liberada</text>
+
+    <line x1="635" y1="172" x2="570" y2="172" stroke="#64748b" stroke-width="1"/>
+    <text x="640" y="175" font-family="Segoe UI, sans-serif" font-size="6.8" font-weight="700" fill="#475569" text-anchor="start">Feedback Formativo</text>
+  </svg>
+  <div class="diagram-caption">Figura 7.2 — Disposição do HUD: Articulação entre Enunciado Conceitual, Feedback Não Punitivo e Ação Concreta.</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 15: AUTORIA, MINI BIO & REFERÊNCIAS BIBLIOGRÁFICAS    -->
+<!-- ============================================================ -->
+<div class="page-break"></div>
+
+<h1 class="section-title"><span class="sec-num">08</span> Autoria, Mini Biografia e Referências Normativas</h1>
+
+<div class="bio-container avoid-break">
+  <div class="bio-sidebar">
+    <div class="bio-avatar-placeholder">DD</div>
+    <div style="font-weight:800; font-size:10.5pt; color:#0f172a; margin-bottom:1px;">Diego Divino Duenhas</div>
+    <div style="font-size:7.2pt; color:#0284c7; font-weight:700; margin-bottom:6px;">Designer Gráfico & Desenvolvedor Web</div>
+    
+    <div style="font-size:7pt; color:#475569; line-height:1.3; border-top:1px solid #e2e8f0; padding-top:6px;">
+      <strong>Website Oficial:</strong><br>
+      <a href="https://diegoduenhas.com.br" style="color:#0284c7; text-decoration:none;" target="_blank">diegoduenhas.com.br</a><br><br>
+      <strong>E-mail:</strong><br>
+      dduenhas@gmail.com<br><br>
+      <strong>Localização:</strong><br>
+      São João da Boa Vista, SP — Brasil<br><br>
+      <strong>Currículo Completo:</strong><br>
+      <a href="https://diegoduenhas.com.br/curriculo/" style="color:#0284c7; text-decoration:none;" target="_blank">diegoduenhas.com.br/curriculo/</a>
+    </div>
+  </div>
+
+  <div class="bio-main">
+    <h2 style="font-size:9.5pt; font-weight:800; color:#0f172a; margin:0 0 4px 0;">Mini Biografia Profissional</h2>
+    <p style="font-size:7.8pt; line-height:1.4; color:#334155; margin-bottom:6px;">
+      Profissional multidisciplinar com atuação em design gráfico, desenvolvimento de software e tecnologias educacionais aplicadas à educação básica. Graduado em <strong>Tecnologia em Design Gráfico</strong> pelo <strong>SENAC São Paulo (2026)</strong> e em <strong>Tecnologia em Sistemas para Internet</strong> pelo <strong>Instituto Federal de São Paulo (IFSP – Campus São João da Boa Vista, 2017)</strong>, alia domínio técnico de arquiteturas de software e sensibilidade visual no desenvolvimento de ambientes interativos acessíveis.
+    </p>
+    <p style="font-size:7.8pt; line-height:1.4; color:#334155; margin-bottom:6px;">
+      Atua como <strong>Monitor Específico de Tecnologia no Projeto São João Mais Saber</strong> (iniciativa conjunta entre a UNIFEOB e a Prefeitura Municipal de São João da Boa Vista, SP), desenvolvendo práticas pedagógicas, mediação de oficinas e formação docente com foco no Pensamento Computacional, Cultura Maker e Robótica Educacional para o Ensino Fundamental I e Educação Infantil.
+    </p>
+
+    <h3 style="font-size:8.5pt; font-weight:700; color:#0f172a; margin:6px 0 3px 0;">Projetos Educacionais e Autorais Desenvolvidos</h3>
+    
+    <div class="info-grid-2">
+      <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+        <strong style="color:#0f172a; font-size:7.2pt;">Code Voxel</strong>
+        <div style="font-size:6.8pt; color:#475569; margin-top:1px;">Ambiente gamificado para iniciação à lógica de programação e algoritmos no Ensino Fundamental.</div>
+        <div style="margin-top:2px;"><span class="project-tag">Pensamento Computacional</span> <span class="project-tag">Jogos</span></div>
+      </div>
+
+      <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+        <strong style="color:#0f172a; font-size:7.2pt;">Histórias Acessíveis</strong>
+        <div style="font-size:6.8pt; color:#475569; margin-top:1px;">Jogo narrativo ramificado com áudio e pistas visuais projetado para crianças em processo de alfabetização.</div>
+        <div style="margin-top:2px;"><span class="project-tag">Acessibilidade</span> <span class="project-tag">DUA/UDL</span></div>
+      </div>
+
+      <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+        <strong style="color:#0f172a; font-size:7.2pt;">Projeto Mentes Criativas</strong>
+        <div style="font-size:6.8pt; color:#475569; margin-top:1px;">Proposta metodológica de oficinas de tecnologia, robótica e pensamento lógico no São João Mais Saber.</div>
+        <div style="margin-top:2px;"><span class="project-tag">Mediação Docente</span> <span class="project-tag">Maker</span></div>
+      </div>
+
+      <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+        <strong style="color:#0f172a; font-size:7.2pt;">Adugo & Chessly</strong>
+        <div style="font-size:6.8pt; color:#475569; margin-top:1px;">Jogos digitais de estratégia: Adugo (estratégia tradicional indígena) e Chessly (xadrez e antecipação).</div>
+        <div style="margin-top:2px;"><span class="project-tag">Estratégia</span> <span class="project-tag">Cultura</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="subsection-title" style="margin-top:10px;">Referências Normativas e Conceituais</h2>
+<div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:8px 10px; font-size:7.1pt; line-height:1.45; color:#334155;" class="avoid-break">
+  <strong>BRASIL. Ministério da Educação.</strong> <em>Base Nacional Comum Curricular: Educação é a Base</em>. Brasília: MEC, 2018.<br>
+  <strong>BRASIL. Conselho Nacional de Educação.</strong> <em>Resolução CNE/CEB nº 1, de 4 de outubro de 2022</em>. Institui as Normas sobre Computação na Educação Básica — Complemento à BNCC. Brasília: CNE, 2022.<br>
+  <strong>BRUNER, Jerome S.</strong> <em>Toward a Theory of Instruction</em>. Cambridge: Harvard University Press, 1966.<br>
+  <strong>VYGOTSKY, Lev S.</strong> <em>A formação social da mente: o desenvolvimento dos processos psicológicos superiores</em>. São Paulo: Martins Fontes, 1998.<br>
+  <strong>EDUCATION ENDOWMENT FOUNDATION (EEF).</strong> <em>Metacognition and self-regulated learning: guidance report</em>. London: EEF, 2021.<br>
+  <strong>CAST (Center for Applied Special Technology).</strong> <em>Universal Design for Learning Guidelines version 2.2</em>. Wakefield, MA: CAST, 2018.
+</div>
+
+<div style="margin-top:14px; border-top:1px solid #e2e8f0; padding-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:7.2pt; color:#64748b;">
+  <div><strong>SokoMath</strong> — Documentação Pedagógica e Técnica (Edição Revisada 2026)</div>
+  <div>Diego Divino Duenhas • <a href="https://diegoduenhas.com.br" style="color:#0284c7; text-decoration:none;">diegoduenhas.com.br</a></div>
+</div>
+
+</body>
+</html>
+"""
+    return html_content
+
+def main():
+    print("[1/3] Carregando dados do CSV e da Revisao Critica...")
+    rev_tracks = load_data()
+    total_phases = sum(len(v) for v in rev_tracks.values())
+    print(f"Total de fases carregadas e auditadas: {total_phases}")
+
+    print("[2/3] Gerando HTML editorial com estilizacao e revisao pedagogica...")
+    html_data = generate_html(rev_tracks)
+    with open(HTML_PATH, mode='w', encoding='utf-8') as f:
+        f.write(html_data)
+    print(f"HTML salvo em: {HTML_PATH}")
+
+    print("[3/3] Exportando PDF profissional via Microsoft Edge headless...")
+    if not os.path.exists(EDGE_PATH):
+        print(f"Erro: Edge nao encontrado em {EDGE_PATH}")
+        sys.exit(1)
+
+    file_url = "file:///" + HTML_PATH.replace("\\", "/")
+    cmd = [
+        EDGE_PATH,
+        "--headless=new",
+        "--disable-gpu",
+        "--no-pdf-header-footer",
+        f"--user-data-dir={TEMP_PROFILE}",
+        f"--print-to-pdf={PDF_PATH}",
+        file_url
+    ]
+
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    if os.path.exists(PDF_PATH):
+        size_kb = os.path.getsize(PDF_PATH) / 1024
+        print(f"Sucesso! PDF gerado com exito: {PDF_PATH} ({size_kb:.1f} KB)")
+    else:
+        print(f"Erro ao gerar PDF. Codigo de saida: {res.returncode}")
+        print("STDOUT:", res.stdout)
+        print("STDERR:", res.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

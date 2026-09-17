@@ -1,0 +1,155 @@
+SOKOMATH — DOCUMENTAÇÃO PEDAGÓGICA E TÉCNICA REVISADA
+Versão de revisão crítica • 2026
+
+FINALIDADE
+Este documento apresenta uma revisão pedagógica, curricular e editorial integral da documentação do SokoMath. O jogo é concebido como ambiente de resolução de problemas em grade, inspirado na mecânica Sokoban, no qual a movimentação espacial de caixas é articulada a desafios matemáticos e a uma trilha complementar de pensamento computacional.
+
+ESCOPO E PREMISSA DE VALIDAÇÃO
+O alinhamento indicado é uma proposta de correspondência entre objetivos de fase e habilidades da BNCC. Ele não constitui homologação, certificação ou chancela do MEC/CNE. A adequação curricular efetiva depende da versão implementada, do planejamento docente, do currículo da rede e de avaliação com estudantes. Por isso, expressões como “100% alinhado ao MEC”, “fases homologadas” e “sem barreiras de aprendizagem” foram substituídas por formulações verificáveis e eticamente mais adequadas.
+
+FICHA TÉCNICA
+Motor: Godot Engine 4.3 LTS (2D) | Linguagem: GDScript | Grade: ortogonal discreta (64×64 px) | Renderizador: Compatibility/Mobile | Assets: Kenney Sokoban, sob licença CC0, quando efetivamente utilizados e creditados.
+Público previsto: estudantes do 1º ao 5º ano do Ensino Fundamental, com mediação docente e adaptações de acessibilidade quando necessárias. Estrutura: 50 fases de Matemática e 10 desafios complementares de Computação.
+
+SUMÁRIO
+1. Visão pedagógica e limites da proposta
+2. Arquitetura técnica e critérios de qualidade
+3. Fundamentos didáticos, erro e metacognição
+4. Alinhamento curricular e matriz de 60 fases
+5. Acessibilidade, avaliação e uso docente
+6. Auditoria das correções realizadas
+
+1. VISÃO PEDAGÓGICA E LIMITES DA PROPOSTA
+O SokoMath propõe que problemas de Matemática sejam enfrentados em uma situação de jogo baseada em deslocamento, planejamento e organização espacial. A mecânica pode tornar visíveis relações como ordem, composição de números, arranjo retangular, partilha e leitura de condições. Entretanto, a ação de empurrar caixas não produz aprendizagem matemática automaticamente: cada fase deve conter um enunciado inteligível, uma relação matemática que possa ser representada e uma mediação que leve o estudante a explicar sua estratégia.
+
+A dinâmica Sokoban é especialmente pertinente para trabalhar planejamento, antecipação de consequências, orientação espacial, persistência e revisão de estratégias. O jogo deve evitar associar competência matemática apenas a rapidez ou número mínimo de movimentos. Quando houver contagem de passos, ela deve ser um dado para análise da estratégia, nunca critério único de êxito.
+
+2. ARQUITETURA TÉCNICA E CRITÉRIOS DE QUALIDADE
+A arquitetura pode separar dados de fase (LevelData), controle de movimentação e estados (LevelManager), regras de validação, interface/HUD, áudio e persistência. A grade com coordenadas inteiras (Vector2i) favorece previsibilidade e reprodutibilidade da lógica. O histórico de estados deve guardar posição do jogador, posição e estado das caixas, metas e variáveis relevantes antes de cada ação reversível.
+
+A expressão “sanitização preventiva” deve ser usada com cautela. Em vez de reposicionar automaticamente uma caixa, o sistema deve validar cada mapa antes de publicá-lo: checar alcance, metas, becos sem saída, posições iniciais e solvabilidade. A distância Manhattan mínima calcula proximidade em uma grade sem diagonais: |x2−x1| + |y2−y1|. Ela ajuda a encontrar células próximas, mas não prova que há caminho livre nem que a fase é solucionável. Um reposicionamento automático pode alterar o desafio e ocultar um defeito de autoria.
+
+3. FUNDAMENTOS DIDÁTICOS, ERRO E METACOGNIÇÃO
+A aproximação aos modos de representação de Bruner é pertinente como lente de design: enativo (agir e deslocar), icônico (malha, ícones e representações visuais) e simbólico (números, operadores, frações e regras). Eles não devem ser tratados como sequência obrigatória e rígida; a interface deve articular os três modos e permitir idas e vindas entre ação, visualização e registro.
+
+PEDAGOGIA DO ERRO CONSTRUTIVO E AUTORREGULAÇÃO
+No SokoMath, um erro deve ser tratado como informação para a aprendizagem, não como punição. Ao detectar uma condição incompatível ou uma situação sem solução local, o sistema pode sinalizá-la visualmente e oferecer uma pista breve, sem encerrar automaticamente a partida. O recurso Desfazer permite revisar decisões, testar hipóteses, comparar estratégias e observar consequências. Esse ciclo — tentativa, feedback, explicação, revisão e nova tentativa — pode favorecer o monitoramento e o ajuste das próprias estratégias.
+
+A referência a Vygotsky é mais adequada quando o painel é descrito como mediação ou apoio gradual (scaffolding), e não como causa direta da autorregulação. Feedbacks úteis perguntam “o que nesta posição impede a rota?” ou “qual decisão pode ser revista?”, em vez de apenas informar “errado”. O professor pode ampliar o processo pedindo previsão, justificativa e comparação de soluções.
+
+PROGRESSÃO E DESAFIOS INTEGRADORES
+A progressão deve ser determinada por evidências de complexidade: quantidade de caixas e metas, necessidade de antecipação, número de condições simultâneas, representação matemática solicitada e autonomia esperada. Os desafios integradores devem recuperar objetivos já trabalhados, sem introduzir abruptamente uma operação ou notação nova.
+
+4. ALINHAMENTO CURRICULAR
+A BNCC organiza Matemática em Números, Álgebra, Geometria, Grandezas e Medidas, e Probabilidade e Estatística. O documento emprega os códigos como referência de planejamento. Alguns objetivos podem mobilizar mais de uma habilidade, mas o código não substitui a explicitação do objeto de conhecimento, das evidências de aprendizagem e da mediação. A Computação integra a BNCC como complemento normativo organizado nos eixos Pensamento Computacional, Mundo Digital e Cultura Digital; a trilha atual concentra-se predominantemente em Pensamento Computacional.
+
+5. ACESSIBILIDADE, AVALIAÇÃO E USO DOCENTE
+Acessibilidade não se esgota em contraste e ampliação. Recomenda-se: textos redimensionáveis sem perda de conteúdo; contraste testado; indicação por texto, ícone e cor; navegação integral por teclado; foco visível; alvos de toque adequados; ausência de limite de tempo punitivo; controle de volume e alternativa visual para sons; linguagem direta; e testes com estudantes que apresentem diferentes perfis de acesso. “UDL/DUA” deve orientar múltiplas formas de engajamento, representação e ação/expressão, e não ser apenas um rótulo.
+
+O professor deve usar registros do jogo de modo formativo: tentativas, uso de desfazer, estratégias verbalizadas, justificativas e tipos de erro. Sugere-se uma rotina: (1) antecipar a estratégia; (2) jogar em dupla ou individualmente; (3) registrar uma decisão relevante; (4) discutir soluções distintas; (5) retomar a representação matemática no papel, material manipulável ou quadro.
+
+6. AUDITORIA DAS CORREÇÕES REALIZADAS
+• Foi removida a alegação de homologação ou alinhamento total pelo MEC, pois a BNCC define referências curriculares e a homologação/certificação de um jogo não decorre desse mapeamento.
+• A referência normativa correta é Resolução CNE/CEB nº 1, de 4 de outubro de 2022 — e não CNE/CP nº 1/2022.
+• Foram corrigidas associações de habilidades: EF03MA08 para divisão; EF03MA09 para relação entre divisão exata e frações usuais; EF04MA21 para área em malha; EF05MA20 para investigação da relação área–perímetro; EF05MA24 para leitura/interpretação de dados na fase integradora sugerida.
+• Foram substituídas afirmações absolutas (“garantindo aprendizagem sem frustração”, “sem barreiras”) por compromissos de design que dependem de validação com usuários.
+• Foi refinada a descrição de erro construtivo, metacognição, Vygotsky e feedback.
+• “Distância Manhattan mínima” foi delimitada como medida geométrica de proximidade, insuficiente para garantir rota válida ou solução em Sokoban.
+
+REFERÊNCIAS NORMATIVAS E CONCEITUAIS
+BRASIL. Ministério da Educação. Base Nacional Comum Curricular: Educação é a Base. Brasília: MEC, 2018.
+BRASIL. Conselho Nacional de Educação. Resolução CNE/CEB nº 1, de 4 de outubro de 2022. Normas sobre Computação na Educação Básica — Complemento à BNCC.
+BRUNER, J. S. Toward a Theory of Instruction. Cambridge: Harvard University Press, 1966.
+VYGOTSKY, L. S. A formação social da mente. São Paulo: Martins Fontes.
+EDUCATION ENDOWMENT FOUNDATION. Metacognition and self-regulated learning: guidance report.
+
+AUTORIA
+Concepção, design e desenvolvimento: Diego Divino Duenhas.
+Perfil informado no documento-base: Designer Gráfico e Desenvolvedor Web; Monitor Específico de Tecnologia no Projeto São João Mais Saber — UNIFEOB/Prefeitura Municipal de São João da Boa Vista, SP.
+
+
+MATRIZ CURRICULAR REVISADA
+
+1º ANO
+Fase | Título | Referência curricular | Objetivo | Operacionalização no jogo
+------------------------------------------------------------------------------------------------------------------------------------------------------
+1 | Contagem de objetos | EF01MA04 | Contar coleções de até 100 e registrar o total. | Contar caixas; selecionar o numeral que representa a quantidade.
+2 | Correspondência um a um | EF01MA02 | Contar com pareamento e agrupamentos. | Associar cada caixa a um receptor; explicitar o critério de pareamento.
+3 | Comparação de quantidades | EF01MA03 | Estimar e comparar conjuntos de até cerca de 20 elementos. | Escolher a caixa que representa a maior quantidade, justificando por comparação.
+4 | Número entre | EF01MA05 | Comparar números naturais de até duas ordens, com/sem reta numérica. | Completar a posição intermediária em sequência apresentada.
+5 | Ordenação crescente | EF01MA05 | Comparar e ordenar números naturais de até duas ordens. | Organizar 1, 2 e 3 em ordem crescente.
+6 | Padrões repetitivos | EF01MA09 | Organizar e ordenar objetos por atributos e reconhecer padrões. | Completar padrão visual AB; usar cores e legendas, não apenas números.
+7 | Sequência +1 | EF01MA10 | Descrever regra de formação de sequência recursiva. | Completar 2, 3, 4, __ e verbalizar “aumenta 1”.
+8 | Juntar quantidades | EF01MA06 | Construir fatos básicos de adição e utilizá-los no cálculo. | Selecionar 2 e 3 para compor 5; registrar a sentença numérica.
+9 | Retirar e separar | EF01MA08 | Resolver/elaborar problemas de adição e subtração com diferentes significados. | Resolver 5 − 2 por retirada e selecionar 3.
+10 | Desafio integrador | EF01MA04; EF01MA06; EF01MA08 | Articular contagem e composição aditiva. | Encontrar duas parcelas que componham 6 em contexto de gincana.
+
+2º ANO
+Fase | Título | Referência curricular | Objetivo | Operacionalização no jogo
+------------------------------------------------------------------------------------------------------------------------------------------------------
+1 | Ordenação de dezenas | EF02MA01 | Comparar e ordenar números naturais até a ordem de centenas. | Ordenar 10, 20 e 30 e explicar o critério.
+2 | Comparação > 15 | EF02MA01 | Comparar números naturais. | Selecionar 18 entre 12, 18 e 9 conforme a condição dada.
+3 | Reta numérica | EF02MA01 | Comparar e ordenar números; usar escala explícita. | Completar 10, 20, __, 40 com 30.
+4 | Composição de 25 | EF02MA05 | Compor/decompor números naturais até 100. | Combinar 20 e 5 para formar 25.
+5 | Adição mental | EF02MA06 | Resolver problemas de adição e subtração com estratégias pessoais. | Selecionar 8 e 7 para totalizar 15.
+6 | Completar uma quantidade | EF02MA06 | Resolver situação de completar: 6 + __ = 14. | Identificar 8 como complemento; registrar a relação inversa.
+7 | Complementos de 100 | EF02MA05; EF02MA06 | Compor números e resolver adição. | Selecionar 60 e 40 para compor 100.
+8 | Pares e ímpares | EF02MA09 | Construir sequências e reconhecer regularidades; tratar paridade como ampliação curricular. | Classificar 4 e 7 por agrupamento em pares; não apresentar como habilidade literal exclusiva.
+9 | Sequência +5 | EF02MA09 | Construir sequências recursivas com números naturais. | Completar 5, 10, 15, __; enunciar a regra +5.
+10 | Desafio integrador | EF02MA06 | Resolver problema de adição em contexto. | Compor 12 + 8 e explicitar o total de 20.
+
+3º ANO
+Fase | Título | Referência curricular | Objetivo | Operacionalização no jogo
+------------------------------------------------------------------------------------------------------------------------------------------------------
+1 | Adição e decomposição | EF03MA05 | Utilizar procedimentos de cálculo mental e escrito em problemas. | Compor 25 + 15 = 40 por decomposição.
+2 | Subtração contextualizada | EF03MA06 | Resolver/elaborar problemas de subtração. | Resolver 50 − 18 = 32 em contexto de estoque.
+3 | Multiplicação: grupos iguais | EF03MA07 | Resolver problemas de multiplicação por adição de parcelas iguais. | Representar 3 grupos de 4 e obter 12.
+4 | Arranjo retangular | EF03MA08 | Resolver/elaborar problemas de multiplicação com arranjos retangulares. | Representar 3 linhas de 5 e calcular 15.
+5 | Fatos básicos multiplicativos | EF03MA07 | Construir significados da multiplicação e estratégias de cálculo. | Selecionar fatores 4 e 5 para produzir 20.
+6 | Divisão: partilha | EF03MA08 | Resolver problemas de divisão por repartição equitativa e medida. | Resolver 18 ÷ 3 = 6 por distribuição igualitária.
+7 | Divisão: medida | EF03MA08 | Resolver problemas de divisão por medida. | Determinar quantos grupos de 4 cabem em 24.
+8 | Metade e terça parte | EF03MA09 | Associar quocientes exatos a metade, terça, quarta, quinta e décima partes. | Calcular 16 ÷ 2 e 15 ÷ 3 e relacionar a 1/2 e 1/3.
+9 | Sequência +4 | EF03MA10 | Identificar regularidade em sequências ordenadas. | Completar 4, 8, 12, 16, 20 e declarar a regra.
+10 | Desafio integrador | EF03MA07 | Resolver problema de multiplicação em contexto. | Calcular 6 estojos a 4 moedas: 6 × 4.
+
+4º ANO
+Fase | Título | Referência curricular | Objetivo | Operacionalização no jogo
+------------------------------------------------------------------------------------------------------------------------------------------------------
+1 | Adição com centenas | EF04MA03 | Resolver problemas de adição e subtração com números naturais. | Somar 150 + 250 em situação de arrecadação.
+2 | Multiplicação contextualizada | EF04MA06 | Resolver problemas de multiplicação com naturais. | Calcular 8 × 6 em contexto de transporte.
+3 | Divisão com resto | EF04MA07 | Resolver problemas de divisão cujo divisor tenha até dois algarismos, interpretando o resto. | Interpretar 15 ÷ 4: 3 pacotes completos e resto 3.
+4 | Operações inversas | EF04MA06; EF04MA07 | Mobilizar relações entre multiplicação e divisão. | Usar 7 × 6 = 42 para resolver 42 ÷ 6.
+5 | Fatores de 100 | EF04MA06 | Resolver problema multiplicativo; evitar chamar a atividade de estimativa se não há estimativa. | Encontrar 4 × 25 = 100.
+6 | Fração unitária | EF04MA09 | Reconhecer frações unitárias mais usuais em contextos de partilha. | Calcular 1/4 de 8 com representação visual de 8 partes.
+7 | Perímetro | EF04MA20 | Medir e estimar comprimentos, incluindo perímetros. | Calcular e, quando possível, medir o contorno 4 m por 3 m.
+8 | Área em malha | EF04MA21 | Medir, comparar e estimar área de figuras planas em malha quadriculada. | Contar 5 × 3 unidades quadradas; distinguir área de perímetro.
+9 | Leitura de gráfico | EF04MA27 | Analisar dados apresentados em tabelas e gráficos de colunas. | Ler 18 e 12 no gráfico e calcular a diferença.
+10 | Desafio integrador | EF04MA20 | Mobilizar perímetro em contexto. | Calcular o perímetro de um quadrado de lado 6 m.
+
+5º ANO
+Fase | Título | Referência curricular | Objetivo | Operacionalização no jogo
+------------------------------------------------------------------------------------------------------------------------------------------------------
+1 | Valor posicional | EF05MA01 | Ler, escrever e ordenar números naturais até a ordem das centenas de milhar. | Compor 345 a partir de 300 + 45.
+2 | Fração de quantidade | EF05MA03 | Identificar e representar frações; resolver situação envolvendo parte de uma quantidade. | Calcular 3/4 de 20 com representação do todo.
+3 | Comparação de frações | EF05MA03 | Identificar e representar frações; comparar com apoio de representação visual. | Comparar 1/2 e 1/4 de um mesmo todo dividido em 8 partes.
+4 | Frações equivalentes | EF05MA04 | Identificar frações equivalentes. | Representar 2/4 = 1/2 e calcular 6 de 12 partes.
+5 | Decimais e dinheiro | EF05MA02; EF05MA07 | Ler, escrever e ordenar decimais; resolver adição/subtração em contexto monetário. | Somar R$ 2,50 e R$ 1,50, mantendo a escrita decimal.
+6 | Troco | EF05MA07 | Resolver problemas de adição e subtração com números racionais decimais finitos. | Calcular R$ 10,00 − R$ 6,50 = R$ 3,50.
+7 | Porcentagem de referência | EF05MA06 | Associar porcentagens usuais a representações fracionárias. | Relacionar 50% a 1/2 e calcular desconto de R$ 30,00 sobre R$ 60,00.
+8 | Proporcionalidade direta | EF05MA12 | Resolver problemas de proporcionalidade direta. | Calcular 6 pacotes de 5 figurinhas.
+9 | Área retangular | EF05MA20 | Investigar relações entre áreas e perímetros; cálculo de área deve ter apoio de malha/medida. | Comparar retângulos e discutir que mesma área pode ter perímetros distintos.
+10 | Desafio integrador | EF05MA24 | Interpretar dados em tabelas e gráficos; resolver problema envolvendo o dobro. | Ler dados da pesquisa e totalizar 12 + 24.
+
+COMPUTAÇÃO — TRILHA COMPLEMENTAR
+Fase | Título | Referência curricular | Objetivo | Operacionalização no jogo
+------------------------------------------------------------------------------------------------------------------------------------------------------
+1 | Planejamento de rota | PC: algoritmos | Planejar uma sequência finita de ações e antecipar bloqueios. | Descrever, executar e revisar uma rota até o alvo.
+2 | Reconhecimento de padrões | PC: padrões | Reconhecer regularidades e generalizar uma regra. | Completar 3, 6, 9, 12 e explicitar +3.
+3 | Orientação espacial | PC: decomposição | Decompor rota em submetas e representar deslocamentos. | Conduzir duas caixas sem bloquear corredores.
+4 | Classificação condicional | PC: regras condicionais | Aplicar uma regra do tipo se/então a atributos observáveis. | Classificar par/ímpar em receptores distintos.
+5 | Conjunção AND | PC: lógica booleana | Compreender que a saída depende de duas condições verdadeiras. | Ativar A=1 e B=1; explicitar a tabela de verdade.
+6 | Disjunção OR | PC: lógica booleana | Compreender que ao menos uma condição verdadeira ativa a saída. | Testar 1/0, 0/1 e 1/1; explicitar a regra.
+7 | Filtragem | PC: abstração | Selecionar dados com base em critérios explícitos. | Encontrar o número par maior que 10.
+8 | Depuração | PC: depuração | Localizar, explicar e corrigir uma falha em procedimento/regra. | Substituir entrada incompatível e registrar o que foi corrigido.
+9 | Circuitos combinados | PC: sistemas e lógica | Articular condições lógicas em circuito simplificado. | Testar entradas e prever a saída antes de agir.
+10 | Desafio lógico integrador | PC: algoritmos e avaliação | Planejar, executar, monitorar e revisar solução; “menor número de passos” é meta opcional. | Ordenar três estações sem obstruir a rota; justificar estratégia.
