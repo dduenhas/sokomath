@@ -5,12 +5,20 @@
 </p>
 
 <p align="center">
+  <a href="./SOKOMATH_DOCUMENTACAO_PEDAGOGICA_E_TECNICA.pdf"><img src="https://img.shields.io/badge/Documentação-PDF%20Oficial%20(15%20pág.)-red?style=for-the-badge&logo=adobeacrobatreader" alt="Documentação PDF"></a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Engine-Godot%204.x-blue?logo=godotengine" alt="Godot 4">
-  <img src="https://img.shields.io/badge/BNCC-Alinhado%201º%20ao%205º%20Ano-brightgreen" alt="BNCC Alinhado">
-  <img src="https://img.shields.io/badge/BNCC%20Computação-CNE%2FCP%20nº%201%2F2022-orange" alt="BNCC Computação">
+  <img src="https://img.shields.io/badge/BNCC-Matemática%20(2018)-brightgreen" alt="BNCC Matemática">
+  <img src="https://img.shields.io/badge/BNCC%20Computação-Res.%20CNE%2FCEB%20nº%201%2F2022-orange" alt="BNCC Computação">
   <img src="https://img.shields.io/badge/Plataformas-Desktop%20%7C%20Tablets%20%7C%20Smartphones-purple" alt="Plataformas">
   <img src="https://img.shields.io/badge/Acessibilidade-DUA%20%2F%20Alto%20Contraste%20%2F%20Touch-teal" alt="Acessibilidade">
 </p>
+
+> 📄 **RELATÓRIO & DOCUMENTAÇÃO PEDAGÓGICA INTEGRAL (PDF):**  
+> Para consultar a fundamentação teórica completa (modos de Bruner, pedagogia do erro construtivo, mediação em Vygotsky e DUA), as diretrizes da Resolução CNE/CEB nº 1/2022, a arquitetura técnica em Godot 4 e a **matriz tabular detalhada de todas as 60 fases**, acesse o documento oficial:  
+> 👉 **[Clique aqui para abrir ou baixar o PDF: SOKOMATH_DOCUMENTACAO_PEDAGOGICA_E_TECNICA.pdf](./SOKOMATH_DOCUMENTACAO_PEDAGOGICA_E_TECNICA.pdf)** *(15 páginas, ~856 KB, Edição Revisada 2026)*
 
 ---
 
@@ -24,7 +32,7 @@ O jogo foi desenvolvido com foco no **Desenho Universal para a Aprendizagem (DUA
 
 ## 🎯 Pilares da BNCC Computação
 
-Em consonância com o Complemento à Base Nacional Comum Curricular (Resolução CNE/CP nº 1/2022), o SokoMath desenvolve os quatro eixos estruturantes do **Pensamento Computacional**:
+Em consonância com as Normas sobre Computação na Educação Básica — Complemento à BNCC (Resolução CNE/CEB nº 1, de 4 de outubro de 2022), o SokoMath desenvolve os eixos estruturantes do **Pensamento Computacional**:
 
 1. **🧩 Decomposição:** O jogador fraciona a solução do nível em etapas sucessivas: planejar a liberação de vias, desobstruir corredores e posicionar caixas na ordem de dependência correta.
 2. **🔍 Reconhecimento de Padrões:** Identificação de propriedades numéricas recursivas (números pares e ímpares, progressões aritméticas de +2, +3, +5, múltiplos e operadores relacionais).
@@ -95,6 +103,28 @@ O jogo conta com um botão dedicado com o ícone da **Corujinha Pedagógica (�
 
 ---
 
+## 📑 Documentação Pedagógica e Técnica Oficial (PDF)
+
+O projeto conta com um relatório editorial de **15 páginas**, elaborado para submissão acadêmica, avaliação curricular e orientação docente:
+
+* 📥 **Documento PDF Oficial:** [`SOKOMATH_DOCUMENTACAO_PEDAGOGICA_E_TECNICA.pdf`](./SOKOMATH_DOCUMENTACAO_PEDAGOGICA_E_TECNICA.pdf) *(Edição Revisada 2026)*
+* 🛠️ **Script Gerador Automatizado:** [`build_sokomath_doc_pdf.py`](./build_sokomath_doc_pdf.py) *(Python + Edge Headless)*
+* 🌐 **Template HTML / CSS Paged Media:** [`sokomath_documentacao.html`](./sokomath_documentacao.html)
+* 📋 **Base Textual da Revisão Crítica:** [`SokoMath_documentacao_revisada.txt`](./SokoMath_documentacao_revisada.txt)
+
+### Estrutura do Relatório
+1. **Ficha Técnica & Escopo de Validação:** Metadados, DUA/UDL e explicitação ética da correspondência curricular.
+2. **Visão Pedagógica e Limites da Proposta:** Raciocínio espacial em grade, planejamento prévio e papel ativo da mediação docente.
+3. **Arquitetura Técnica (Godot 4.3 LTS):** Grid discreto (`Vector2i`), histórico de estados (`history_stack` / Undo) e validação estática de autoria (distância Manhattan delimitada).
+4. **Fundamentos Didáticos, Erro e Metacognição:** Modos de Bruner (enativo, icônico e simbólico) integrados, pedagogia do erro construtivo e *scaffolding* em Vygotsky.
+5. **Alinhamento Curricular BNCC:** Matriz das 5 unidades da Matemática e Trilha de Computação fundamentada na Resolução CNE/CEB nº 1/2022.
+6. **Acessibilidade, Avaliação Formativa e Auditoria:** Diretrizes DUA, rotina docente em 5 etapas e quadro de auditoria das correções realizadas.
+7. **Matriz Curricular Completa (60 Fases):** 1 página A4 dedicada por ano (1º ao 5º Ano) e Trilha Complementar de Computação, com objetivos, caixas e feedbacks.
+8. **Análise Gráfica & Interface (HUD):** Gráfico proporcional de eixos temáticos e esquema anotado do HUD com feedback reflexivo.
+9. **Autoria e Referências Normativas:** Perfil profissional de Diego Divino Duenhas, portfólio autoral e referências ABNT.
+
+---
+
 ## 🎮 Controles
 
 ### Teclado (Desktop)
@@ -140,6 +170,8 @@ O repositório já inclui a build Web compilada na pasta `public/` e o arquivo `
 ---
 
 ## 📄 Licença e Créditos
-* **Desenvolvimento e Pedagogia:** Projeto educativo SokoMath.
+* **Concepção, Design e Desenvolvimento:** **Diego Divino Duenhas** ([diegoduenhas.com.br](https://diegoduenhas.com.br)).
+  * *Designer Gráfico (SENAC SP) & Tecnólogo em Sistemas para Internet (IFSP).*
+  * *Monitor Específico de Tecnologia no Projeto São João Mais Saber (UNIFEOB / Prefeitura de São João da Boa Vista, SP).*
 * **Assets Gráficos:** Kenney Sokoban Pack (Domínio Público / CC0).
 * **Trilha Sonora e Efeitos:** Kenney Audio & Creative Commons.
